@@ -65,7 +65,7 @@ class AdminAvailabilityAPIView(APIView):
             setting = AdminAvailability.objects.create(
                 is_online=False,
                 away_message="Admin is currently offline. Automated assistant is responding to customer inquiries.",
-                admin_email="admin@jirmassplastics.com",
+                admin_email="jirmassplasticlimited@gmail.com",
             )
         serializer = AdminAvailabilitySerializer(setting)
         return Response(serializer.data, status=status.HTTP_200_OK)

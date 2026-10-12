@@ -22,11 +22,17 @@ func TestHomeHandler(t *testing.T) {
 		t.Errorf("Expected status 200 OK for '/', got %d", rr.Code)
 	}
 	body := rr.Body.String()
-	if !strings.Contains(body, "Water Packing Rolls") {
-		t.Errorf("Expected body to contain 'Water Packing Rolls'")
+	if !strings.Contains(body, "Plain Roll") {
+		t.Errorf("Expected body to contain 'Plain Roll'")
 	}
-	if !strings.Contains(body, "Water Packing Bags") {
-		t.Errorf("Expected body to contain 'Water Packing Bags'")
+	if !strings.Contains(body, "Printed Film") {
+		t.Errorf("Expected body to contain 'Printed Film'")
+	}
+	if !strings.Contains(body, "Printed Packing Bag") {
+		t.Errorf("Expected body to contain 'Printed Packing Bag'")
+	}
+	if !strings.Contains(body, "Shrink Wrap") {
+		t.Errorf("Expected body to contain 'Shrink Wrap'")
 	}
 	if !strings.Contains(body, "direct-order") {
 		t.Errorf("Expected direct-order section on homepage")
@@ -188,31 +194,55 @@ func TestBotChatHandler(t *testing.T) {
 		t.Errorf("Expected greeting reply to mention water packaging, got: %s", greetResp.Reply)
 	}
 
-	// 4. Rolls query intent
-	rollPayload, _ := json.Marshal(ChatRequest{Message: "Tell me about your water packing rolls and 320mm film"})
+	// 4. Plain Roll query intent
+	rollPayload, _ := json.Marshal(ChatRequest{Message: "Tell me about Plain Roll specifications and 320mm film"})
 	rollReq := httptest.NewRequest(http.MethodPost, "/api/bot/chat", bytes.NewBuffer(rollPayload))
 	rollRR := httptest.NewRecorder()
 	router.ServeHTTP(rollRR, rollReq)
 
 	var rollResp ChatResponse
 	_ = json.Unmarshal(rollRR.Body.Bytes(), &rollResp)
-	if !strings.Contains(rollResp.Reply, "320mm") {
-		t.Errorf("Expected roll specifications in reply, got: %s", rollResp.Reply)
+	if !strings.Contains(rollResp.Reply, "Plain Roll") && !strings.Contains(rollResp.Reply, "320mm") {
+		t.Errorf("Expected Plain Roll specifications in reply, got: %s", rollResp.Reply)
 	}
 
-	// 5. Packing Bags query intent
-	bagPayload, _ := json.Marshal(ChatRequest{Message: "What are your outer packing bags for 20 sachets?"})
+	// 5. Printed Film query intent
+	filmPayload, _ := json.Marshal(ChatRequest{Message: "Can you do custom Printed Film with our pure water brand logo?"})
+	filmReq := httptest.NewRequest(http.MethodPost, "/api/bot/chat", bytes.NewBuffer(filmPayload))
+	filmRR := httptest.NewRecorder()
+	router.ServeHTTP(filmRR, filmReq)
+
+	var filmResp ChatResponse
+	_ = json.Unmarshal(filmRR.Body.Bytes(), &filmResp)
+	if !strings.Contains(filmResp.Reply, "Printed Film") {
+		t.Errorf("Expected Printed Film details in reply, got: %s", filmResp.Reply)
+	}
+
+	// 6. Printed Packing Bag query intent
+	bagPayload, _ := json.Marshal(ChatRequest{Message: "What are your Printed Packing Bags for 20 sachets?"})
 	bagReq := httptest.NewRequest(http.MethodPost, "/api/bot/chat", bytes.NewBuffer(bagPayload))
 	bagRR := httptest.NewRecorder()
 	router.ServeHTTP(bagRR, bagReq)
 
 	var bagResp ChatResponse
 	_ = json.Unmarshal(bagRR.Body.Bytes(), &bagResp)
-	if !strings.Contains(bagResp.Reply, "Packing Bags") {
-		t.Errorf("Expected bags specifications in reply, got: %s", bagResp.Reply)
+	if !strings.Contains(bagResp.Reply, "Printed Packing Bag") && !strings.Contains(bagResp.Reply, "Packing Bag") {
+		t.Errorf("Expected Printed Packing Bag specifications in reply, got: %s", bagResp.Reply)
 	}
 
-	// 6. Lead / Contact Registration intent
+	// 7. Shrink Wrap / SSB & MSB query intent
+	shrinkPayload, _ := json.Marshal(ChatRequest{Message: "Tell me about Shrink Wrap / SSB & MSB for bundling water"})
+	shrinkReq := httptest.NewRequest(http.MethodPost, "/api/bot/chat", bytes.NewBuffer(shrinkPayload))
+	shrinkRR := httptest.NewRecorder()
+	router.ServeHTTP(shrinkRR, shrinkReq)
+
+	var shrinkResp ChatResponse
+	_ = json.Unmarshal(shrinkRR.Body.Bytes(), &shrinkResp)
+	if !strings.Contains(shrinkResp.Reply, "Shrink Wrap") {
+		t.Errorf("Expected Shrink Wrap / SSB & MSB specifications in reply, got: %s", shrinkResp.Reply)
+	}
+
+	// 8. Lead / Contact Registration intent
 	leadPayload, _ := json.Marshal(ChatRequest{
 		Name:    "Chinedu (Aqua Pure)",
 		Phone:   "+2348055667788",
@@ -278,11 +308,29 @@ func TestStaticFiles(t *testing.T) {
 		t.Errorf("Expected 200 OK for /static/js/order.js, got %d", rrOrder.Code)
 	}
 
-	// Check Images
+	// Check Logos & Brand Assets
 	reqLogo := httptest.NewRequest(http.MethodGet, "/static/images/logo.svg", nil)
 	rrLogo := httptest.NewRecorder()
 	router.ServeHTTP(rrLogo, reqLogo)
 	if rrLogo.Code != http.StatusOK {
 		t.Errorf("Expected 200 OK for /static/images/logo.svg, got %d", rrLogo.Code)
+	}
+
+	// Check Product Images for all four products
+	productImages := []string{
+		"/static/images/plain-roll.jpg",
+		"/static/images/printed-film.jpg",
+		"/static/images/printed-packing-bag.jpg",
+		"/static/images/shrink-wrap-ssb-msb.jpg",
+		"/static/images/placeholder-product.svg",
+	}
+
+	for _, imgPath := range productImages {
+		reqImg := httptest.NewRequest(http.MethodGet, imgPath, nil)
+		rrImg := httptest.NewRecorder()
+		router.ServeHTTP(rrImg, reqImg)
+		if rrImg.Code != http.StatusOK {
+			t.Errorf("Expected 200 OK for product image %s, got %d", imgPath, rrImg.Code)
+		}
 	}
 }

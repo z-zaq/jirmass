@@ -20,18 +20,18 @@ type PageData struct {
 	CurrentYear  int
 }
 
-// DirectOrderRequest represents a customer order for water packaging bags & rolls
+// DirectOrderRequest represents a customer order for Plain Roll, Printed Film, Printed Packing Bag, or Shrink Wrap
 type DirectOrderRequest struct {
-	ProductType     string `json:"product_type"`     // "Water Packing Rolls", "Water Packing Bags", "Rolls & Bags"
-	PrintType       string `json:"print_type"`       // "Custom Printed / Branded", "Plain / Unprinted"
-	QuantityRolls   string `json:"quantity_rolls"`   // e.g. "20 Rolls" or "500 kg"
-	QuantityBags    string `json:"quantity_bags"`    // e.g. "50 Bundles" or "2,500 Bags"
+	ProductType     string `json:"product_type"`     // "Plain Roll", "Printed Film", "Printed Packing Bag", "Shrink Wrap / SSB & MSB"
+	PrintType       string `json:"print_type"`       // "Custom Printed / Branded", "Plain / Standard", etc.
+	QuantityRolls   string `json:"quantity_rolls"`   // e.g. "30 Plain Rolls" or "500 kg Printed Film"
+	QuantityBags    string `json:"quantity_bags"`    // e.g. "100 Bag Bundles" or "40 Shrink Wrap Rolls"
 	CompanyName     string `json:"company_name"`     // Pure water factory / brand name
 	CustomerName    string `json:"customer_name"`    // Representative name
 	Phone           string `json:"phone"`            // Phone or WhatsApp
 	Email           string `json:"email"`            // Contact email
 	DeliveryAddress string `json:"delivery_address"` // Factory or depot location
-	Notes           string `json:"notes"`            // Artwork, thickness, delivery notes
+	Notes           string `json:"notes"`            // Artwork, thickness, SSB/MSB specs, delivery notes
 }
 
 // OrderResponse confirms receipt of direct order
@@ -79,7 +79,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	renderTemplate(w, "templates/home.html", PageData{
-		Title:       "Jirmass Plastics - Pure Water Packing Rolls & Sachet Bags",
+		Title:       "Jirmass Plastics - Plain Roll, Printed Film, Packing Bags & Shrink Wrap",
 		AdminOnline: false,
 		CurrentYear: time.Now().Year(),
 	})
@@ -159,7 +159,7 @@ func DirectOrderHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if strings.TrimSpace(req.QuantityRolls) == "" && strings.TrimSpace(req.QuantityBags) == "" {
-		http.Error(w, "Please specify the quantity of water rolls or packing bags needed", http.StatusBadRequest)
+		http.Error(w, "Please specify the quantity of Plain Roll, Printed Film, Printed Packing Bag, or Shrink Wrap needed", http.StatusBadRequest)
 		return
 	}
 
@@ -191,7 +191,7 @@ func DirectOrderHandler(w http.ResponseWriter, r *http.Request) {
 	resp := OrderResponse{
 		Success:     true,
 		OrderNumber: orderNum,
-		Message:     "Thank you! Your direct order for water packaging materials has been logged. Our sales team has been alerted via email and webhook and will reach out via WhatsApp/phone to confirm dispatch details.",
+		Message:     "Thank you! Your direct order for water packaging materials (Plain Roll, Printed Film, Printed Packing Bag, Shrink Wrap / SSB & MSB) has been logged. Our sales team has been alerted via email and webhook and will reach out via WhatsApp/phone to confirm dispatch details.",
 		AlertSent:   true,
 	}
 

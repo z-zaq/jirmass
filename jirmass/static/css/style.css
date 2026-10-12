@@ -97,8 +97,9 @@ header {
 }
 
 .brand-icon {
-    background: var(--accent);
-    color: white;
+    background: #111a36;
+    color: #d3222a;
+    border: 2px solid #d3222a;
     width: 38px;
     height: 38px;
     display: flex;
@@ -307,10 +308,10 @@ main {
     font-size: 0.95rem;
 }
 
-/* Two Core Products Showcase */
+/* Four Core Products Showcase */
 .products-overview {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
     margin-bottom: 3.5rem;
 }
@@ -319,10 +320,108 @@ main {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 2.25rem;
+    padding: 1.75rem;
     box-shadow: var(--shadow);
     display: flex;
     flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-overview-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Dedicated Space for Product Image */
+.product-image-container {
+    position: relative;
+    width: 100%;
+    height: 230px;
+    background: #0f172a;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-bottom: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.35s ease, filter 0.3s ease;
+    will-change: transform;
+}
+
+.product-overview-card:hover .product-img {
+    transform: scale(1.03);
+}
+
+.product-image-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(4px);
+    color: #f8fafc;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.28rem 0.6rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    pointer-events: none;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* Product Visual Descriptive Caption */
+.product-visual-desc {
+    font-size: 0.83rem;
+    color: var(--text-muted);
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 0.45rem 0.75rem;
+    margin-top: -0.35rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    line-height: 1.4;
+}
+
+.product-visual-desc .visual-tag {
+    color: var(--accent-hover);
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: rgba(2, 132, 199, 0.15);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.product-visual-desc .visual-text {
+    color: var(--text-main);
+    font-style: italic;
+    font-weight: 500;
+}
+
+.product-image-hint {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin-top: -0.5rem;
+    margin-bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
 }
 
 .product-overview-badge {
@@ -333,13 +432,13 @@ main {
     font-weight: 700;
     padding: 0.25rem 0.75rem;
     border-radius: 4px;
-    margin-bottom: 1rem;
+    margin-bottom: 0.85rem;
     text-transform: uppercase;
 }
 
 .product-overview-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 0.75rem;
+    font-size: 1.45rem;
+    margin-bottom: 0.65rem;
     color: var(--primary);
 }
 

@@ -8,7 +8,7 @@ admin.site.index_title = "Operations & Customer Support Dashboard"
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("name", "sku", "price", "stock_quantity", "is_active", "created_at")
+    list_display = ("name", "sku", "price", "stock_quantity", "image", "is_active", "created_at")
     search_fields = ("name", "sku")
     list_filter = ("is_active",)
 

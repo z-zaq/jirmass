@@ -15,6 +15,12 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=12, decimal_places=2)
     stock_quantity = models.PositiveIntegerField(default=0)
     sku = models.CharField(max_length=100, unique=True)
+    image = models.FileField(
+        upload_to="products/",
+        blank=True,
+        null=True,
+        help_text="Upload product photo or graphic (PNG, JPG, SVG, WEBP)",
+    )
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -53,7 +59,7 @@ class AdminAvailability(models.Model):
     away_message = models.TextField(
         default="Admin is currently offline. Automated assistant is responding to customer inquiries."
     )
-    admin_email = models.EmailField(default="admin@jirmassplastics.com")
+    admin_email = models.EmailField(default="jirmassplasticlimited@gmail.com")
     webhook_url = models.URLField(blank=True, default="")
     email_alerts_enabled = models.BooleanField(default=True)
     webhook_alerts_enabled = models.BooleanField(default=True)
@@ -149,7 +155,7 @@ def dispatch_admin_notification(event_type: str, title: str, details: dict):
     if not setting:
         setting = AdminAvailability.objects.create(
             is_online=False,
-            admin_email="admin@jirmassplastics.com",
+            admin_email="jirmassplasticlimited@gmail.com",
             email_alerts_enabled=True,
             webhook_alerts_enabled=True,
         )

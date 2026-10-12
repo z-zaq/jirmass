@@ -33,6 +33,52 @@ class ProductModelTest(TestCase):
         self.assertTrue(self.product.is_active)
         self.assertEqual(self.product.sku, "JC-20L-HDPE")
 
+    def test_product_image_field_and_water_packaging_products(self):
+        p1 = Product.objects.create(
+            name="Plain Roll",
+            description="320mm LDPE plain roll film",
+            price=Decimal("0.00"),
+            stock_quantity=500,
+            sku="WTR-TEST-PLAIN-ROLL",
+            image="products/plain-roll.svg",
+            is_active=True,
+        )
+        p2 = Product.objects.create(
+            name="Printed Film",
+            description="Custom printed rotogravure roll",
+            price=Decimal("0.00"),
+            stock_quantity=500,
+            sku="WTR-TEST-PRINTED-FILM",
+            image="products/printed-film.svg",
+            is_active=True,
+        )
+        p3 = Product.objects.create(
+            name="Printed Packing Bag",
+            description="20 sachet outer bagging sack",
+            price=Decimal("0.00"),
+            stock_quantity=1000,
+            sku="WTR-TEST-PACKING-BAG",
+            image="products/printed-packing-bag.svg",
+            is_active=True,
+        )
+        p4 = Product.objects.create(
+            name="Shrink Wrap / SSB & MSB",
+            description="SSB and MSB thermal contraction film",
+            price=Decimal("0.00"),
+            stock_quantity=500,
+            sku="WTR-TEST-SHRINK-WRAP",
+            image="products/shrink-wrap-ssb-msb.svg",
+            is_active=True,
+        )
+        self.assertEqual(p1.name, "Plain Roll")
+        self.assertEqual(p2.name, "Printed Film")
+        self.assertEqual(p3.name, "Printed Packing Bag")
+        self.assertEqual(p4.name, "Shrink Wrap / SSB & MSB")
+        self.assertTrue(p1.image.name.endswith("plain-roll.svg"))
+        self.assertTrue(p2.image.name.endswith("printed-film.svg"))
+        self.assertTrue(p3.image.name.endswith("printed-packing-bag.svg"))
+        self.assertTrue(p4.image.name.endswith("shrink-wrap-ssb-msb.svg"))
+
 
 class CustomerInquiryModelTest(TestCase):
     def test_inquiry_creation_and_defaults(self):

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 896" width="100%" height="100%">
+  <!-- Background -->
+  <rect width="1200" height="896" fill="#f8fafc" />
+  
+  <!-- Subtle Grid -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="1" />
+    </pattern>
+  </defs>
+  <rect width="1200" height="896" fill="url(#grid)" />
+
+  <!-- Center Placeholder Icon -->
+  <g transform="translate(600, 380)" fill="none" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="-90" y="-90" width="180" height="180" rx="20" stroke="#94a3b8" />
+    <circle cx="-35" cy="-35" r="15" fill="#94a3b8" stroke="none" />
+    <path d="M -90 40 L -40 -10 L 20 50 L 50 20 L 90 60" stroke="#94a3b8" />
+    <!-- Strikethrough Line -->
+    <line x1="-110" y1="-110" x2="110" y2="110" stroke="#d3222a" stroke-width="10" />
+  </g>
+
+  <!-- Text -->
+  <text x="600" y="540" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="700" font-size="34" fill="#111a36">
+    Asset Temporarily Unavailable
+  </text>
+
+  <!-- Bottom Brand Ribbon -->
+  <path d="M 0 810 C 350 870, 850 870, 1200 810 L 1200 896 L 0 896 Z" fill="#111a36" />
+  <path d="M 0 835 C 350 885, 850 885, 1200 835 L 1200 896 L 0 896 Z" fill="#d3222a" />
+</svg>

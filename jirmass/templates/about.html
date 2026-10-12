@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Title}}</title>
-    <link rel="icon" type="image/svg+xml" href="/static/images/logo-icon.svg">
+    <link rel="icon" type="image/svg+xml" href="/static/images/logo-icon.svg?v=2">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
@@ -49,24 +49,29 @@
         <div class="features-grid">
             <div class="feature-box">
                 <div class="icon">💧</div>
-                <h3>Form-Fill-Seal Roll Film</h3>
-                <p>Standard 320mm width rolls engineered with uniform gauge thickness to run jam-free through single-head and twin-head automatic packaging machines.</p>
-            </div>
-            <div class="feature-box">
-                <div class="icon">🛍️</div>
-                <h3>Heavy-Duty Outer Sacks</h3>
-                <p>Puncture-resistant bundling bags designed to carry 20 water sachets through rigorous warehouse handling and transit.</p>
+                <h3>Plain Roll</h3>
+                <p>Standard 320mm width plain LDPE rolls engineered with uniform gauge thickness (60–75 microns) to run jam-free through automatic packaging machines.</p>
             </div>
             <div class="feature-box">
                 <div class="icon">🖨️</div>
-                <h3>Custom Rotogravure Printing</h3>
-                <p>High-resolution multi-color printing reproducing your brand identity, batch numbers, and regulatory certification seals with sharp clarity.</p>
+                <h3>Printed Film</h3>
+                <p>High-resolution rotogravure multi-color printing reproducing your brand identity, batch numbers, and regulatory certification seals with sharp clarity.</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">🛍️</div>
+                <h3>Printed Packing Bag</h3>
+                <p>Puncture-resistant outer bundling bags with custom factory branding designed to carry 20 water sachets through rigorous warehouse transit.</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">📦</div>
+                <h3>Shrink Wrap / SSB &amp; MSB</h3>
+                <p>Heavy-duty thermal shrink wrap calibrated for Single Sachet Bag (SSB) &amp; Multiple Sachet Bag (MSB) collation and bottle multipacks.</p>
             </div>
         </div>
 
         <div class="hero-card" style="background: var(--surface); border: 1px solid var(--border); color: var(--text-main); margin-top: 1rem;">
             <h3>Ready to Supply Your Pure Water Factory?</h3>
-            <p style="color: var(--text-muted); margin-bottom: 1rem;">Whether you need weekly roll supplies or bulk outer packing bags, our production lines are built to fulfill your schedule.</p>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Whether you need Plain Roll supplies, custom Printed Film, bulk Printed Packing Bags, or Shrink Wrap / SSB &amp; MSB, our production lines are built to fulfill your schedule.</p>
             <a href="/#direct-order" class="btn btn-primary">Place Direct Factory Order</a>
         </div>
     </main>
@@ -90,13 +95,14 @@
             </div>
             <div id="chat-messages" class="chat-messages"></div>
             <div class="chat-chips">
-                <button type="button" class="chip-btn" onclick="sendChatChip('Tell me about water packing rolls')">💧 Packing Rolls</button>
-                <button type="button" class="chip-btn" onclick="sendChatChip('Tell me about water packing bags')">🛍️ Packing Bags</button>
+                <button type="button" class="chip-btn" onclick="sendChatChip('Tell me about Plain Roll')">💧 Plain Roll</button>
+                <button type="button" class="chip-btn" onclick="sendChatChip('Tell me about Printed Film')">🖨️ Printed Film</button>
+                <button type="button" class="chip-btn" onclick="sendChatChip('Tell me about Printed Packing Bag')">🛍️ Printed Packing Bag</button>
+                <button type="button" class="chip-btn" onclick="sendChatChip('Tell me about Shrink Wrap / SSB & MSB')">📦 Shrink Wrap / SSB &amp; MSB</button>
                 <button type="button" class="chip-btn" onclick="sendChatChip('How do I place a direct order?')">✍️ Direct Order</button>
-                <button type="button" class="chip-btn" onclick="sendChatChip('What are your delivery timelines?')">🚚 Delivery & Hours</button>
             </div>
             <form id="chat-form" class="chat-input-form">
-                <input type="text" id="chat-input" class="chat-input" placeholder="Ask about rolls, bags, or order..." autocomplete="off" required>
+                <input type="text" id="chat-input" class="chat-input" placeholder="Ask about Plain Roll, Printed Film, Bags, Shrink Wrap..." autocomplete="off" required>
                 <button type="submit" class="chat-send-btn">Send</button>
             </form>
         </div>
@@ -106,7 +112,7 @@
         <div class="footer-container">
             <div class="footer-col">
                 <h4>Jirmass Plastics</h4>
-                <p>Specialized manufacturers of virgin LDPE Water Packing Rolls and heavy-duty Water Packing Bags for pure water bottling factories.</p>
+                <p>Specialized manufacturer of food-grade Plain Roll, high-definition Printed Film, heavy-duty Printed Packing Bag, and Shrink Wrap / SSB &amp; MSB for pure water packaging plants.</p>
             </div>
             <div class="footer-col">
                 <h4>Quick Links</h4>
@@ -116,14 +122,22 @@
                 <a href="/contact">Contact Factory Sales</a>
             </div>
             <div class="footer-col">
-                <h4>Factory Operations</h4>
-                <p>Support Hours: Mon - Fri, 8AM - 5PM</p>
-                <p>Automated Order Desk: Active 24/7</p>
-                <p>Inquiries: sales@jirmassplastics.com</p>
+                <h4>Our Locations</h4>
+                <p>📍 <strong>Otukpo:</strong> No.3 New Market Road, Otukpo, Benue State</p>
+                <p>📍 <strong>Kaduna:</strong> No.3 Kachia Road Along Station Round About, Kaduna</p>
+                <p>📍 <strong>Makurdi:</strong> No.28 Naka Road, Makurdi</p>
+            </div>
+            <div class="footer-col">
+                <h4>Contact &amp; Orders</h4>
+                <p>✉️ <a href="mailto:jirmassplasticlimited@gmail.com" style="color:#38bdf8;">jirmassplasticlimited@gmail.com</a></p>
+                <p>📞 <a href="tel:08138881463" style="color:#38bdf8;">08138881463</a></p>
+                <p>📞 <a href="tel:09036148838" style="color:#38bdf8;">09036148838</a></p>
+                <p>📞 <a href="tel:07066820641" style="color:#38bdf8;">07066820641</a></p>
+                <p>⏰ Mon - Fri, 8AM - 5PM | Bot: 24/7</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; {{.CurrentYear}} Jirmass Plastics. Specialized Water Packaging Materials.</p>
+            <p>&copy; {{.CurrentYear}} Jirmass Plastics Limited. Specialized Water Packaging Materials.</p>
         </div>
     </footer>
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Title}}</title>
-    <link rel="icon" type="image/svg+xml" href="/static/images/logo-icon.svg">
+    <link rel="icon" type="image/svg+xml" href="/static/images/logo-icon.svg?v=2">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
@@ -34,11 +34,11 @@
         <!-- Hero Section -->
         <section class="hero">
             <div class="hero-content">
-                <h1>High-Strength Water Packing Rolls & Sachet Bags</h1>
-                <p>Specialized manufacturer of food-grade virgin LDPE water packaging film rolls and heavy-duty outer packing bags. Engineered for automated form-fill-seal machines with zero leakage.</p>
+                <h1>High-Strength Plain Roll, Printed Film, Packing Bags &amp; Shrink Wrap</h1>
+                <p>Specialized manufacturer of food-grade virgin LDPE Plain Roll, custom Printed Film, heavy-duty Printed Packing Bag, and Shrink Wrap / SSB &amp; MSB. Engineered for automated packaging machines with zero leakage.</p>
                 <div class="hero-actions">
                     <a href="#direct-order" class="btn btn-primary">Place Direct Order</a>
-                    <button type="button" onclick="openJirmassChat('What are the specifications for water packing rolls?')" class="btn btn-secondary">💬 Chat With Assistant</button>
+                    <button type="button" onclick="openJirmassChat('What are the specifications for Plain Roll and Printed Film?')" class="btn btn-secondary">💬 Chat With Assistant</button>
                 </div>
             </div>
             <div class="hero-card">
@@ -48,41 +48,111 @@
             </div>
         </section>
 
-        <!-- Two Core Products Showcase -->
+        <!-- Four Core Products Showcase -->
         <section>
             <div class="section-header">
                 <h2>Our Water Packaging Products</h2>
-                <p>We manufacture exclusively for pure water factories and automated sachet packaging plants.</p>
+                <p>We manufacture exclusively for pure water factories, automated sachet packaging plants, and commercial bottling lines.</p>
             </div>
             <div class="products-overview">
-                <!-- Product 1: Rolls -->
+                <!-- Product 1: Plain Roll -->
                 <div class="product-overview-card">
-                    <span class="product-overview-badge">Machine Film</span>
-                    <h3>💧 Water Packing Rolls</h3>
-                    <p>High-tensile virgin LDPE film calibrated specifically for automated form-fill-seal pure water packaging machines.</p>
+                    <!-- Dedicated Space for Product Image -->
+                    <div class="product-image-container">
+                        <img src="/static/images/plain-roll.jpg" alt="Plain Roll - Huge bulk heap of clear film" class="product-img" onerror="this.onerror=null; this.src='/static/images/placeholder-product.svg';" loading="lazy" decoding="async">
+                        <span class="product-image-badge">Clear Film</span>
+                    </div>
+                    <div class="product-visual-desc">
+                        <span class="visual-tag">Visual</span>
+                        <span class="visual-text">Huge bulk heap of clear film</span>
+                    </div>
+
+                    <span class="product-overview-badge">Machine Roll Film</span>
+                    <h3>💧 Plain Roll</h3>
+                    <p>High-tensile virgin LDPE clear film supplied in huge bulk heaps and master rolls, precision-calibrated for automated form-fill-seal pure water packaging machines.</p>
                     <ul class="product-spec-list">
                         <li>Standard 320mm roll width (for 500ml / 600ml sachets)</li>
                         <li>High-clarity virgin food-grade polymer (zero odor, non-toxic)</li>
-                        <li>High-definition custom rotogravure branding or plain clear rolls</li>
-                        <li>Strong horizontal and vertical heat sealability with zero burst rate</li>
+                        <li>Uniform gauge thickness (60–75 microns) for jam-free feeding</li>
+                        <li>Superior horizontal and vertical heat seal strength with zero burst rate</li>
                         <li>Available by roll count or bulk weight (kg)</li>
                     </ul>
-                    <a href="#direct-order" class="btn btn-primary" onclick="selectProductType('Water Packing Rolls')">Order Packing Rolls</a>
+                    <a href="#direct-order" class="btn btn-primary" onclick="selectProductType('Plain Roll')">Order Plain Roll</a>
                 </div>
 
-                <!-- Product 2: Outer Bags -->
+                <!-- Product 2: Printed Film -->
                 <div class="product-overview-card">
-                    <span class="product-overview-badge">Bundling Sacks</span>
-                    <h3>🛍️ Water Packing Bags</h3>
-                    <p>Heavy-duty outer bundling sacks engineered to securely bag and transport 20 sachets of pure water without tearing.</p>
+                    <!-- Dedicated Space for Product Image -->
+                    <div class="product-image-container">
+                        <img src="/static/images/printed-film.jpg" alt="Printed Film - Abstract patterned blue rolls, completely unbranded" class="product-img" onerror="this.onerror=null; this.src='/static/images/placeholder-product.svg';" loading="lazy" decoding="async">
+                        <span class="product-image-badge">Patterned Roll</span>
+                    </div>
+                    <div class="product-visual-desc">
+                        <span class="visual-tag">Visual</span>
+                        <span class="visual-text">Abstract patterned blue rolls, completely unbranded</span>
+                    </div>
+
+                    <span class="product-overview-badge">Patterned Film Roll</span>
+                    <h3>🖨️ Printed Film</h3>
+                    <p>Abstract patterned blue packaging film rolls, completely unbranded for versatile and immediate pure water packaging needs with high tensile integrity.</p>
                     <ul class="product-spec-list">
-                        <li>High puncture resistance and tear-proof bottom seals</li>
-                        <li>Engineered to hold and transport 20 water sachets per bag</li>
-                        <li>Available in Plain and Custom Branded printing</li>
-                        <li>Built for rough handling, commercial logistics, and stacking</li>
+                        <li>Vibrant abstract water blue graphic pattern across full roll length</li>
+                        <li>Completely unbranded for instant turnkey usage across standard sachet lines</li>
+                        <li>Standard 320mm roll width with precise photo-eye optical registration marks</li>
+                        <li>Food-grade fade-resistant inks safe for potable drinking water</li>
+                        <li>Custom factory branding and cylinder setup available upon request</li>
+                    </ul>
+                    <a href="#direct-order" class="btn btn-primary" onclick="selectProductType('Printed Film')">Order Printed Film</a>
+                </div>
+
+                <!-- Product 3: Printed Packing Bag -->
+                <div class="product-overview-card">
+                    <!-- Dedicated Space for Product Image -->
+                    <div class="product-image-container">
+                        <img src="/static/images/printed-packing-bag.jpg" alt="Printed Packing Bag - Bags fanned-out with generic Quality/Eco illustrations Only" class="product-img" onerror="this.onerror=null; this.src='/static/images/placeholder-product.svg';" loading="lazy" decoding="async">
+                        <span class="product-image-badge">Bundling Sack</span>
+                    </div>
+                    <div class="product-visual-desc">
+                        <span class="visual-tag">Visual</span>
+                        <span class="visual-text">Bags fanned-out with generic Quality/Eco illustrations only</span>
+                    </div>
+
+                    <span class="product-overview-badge">Outer Bundling Sack</span>
+                    <h3>🛍️ Printed Packing Bag</h3>
+                    <p>Heavy-duty outer bagging sacks presented fanned-out with generic Quality/Eco illustrations only, engineered to safely bundle 20 sachets of pure water without tearing.</p>
+                    <ul class="product-spec-list">
+                        <li>High puncture resistance and tear-proof reinforced bottom seals</li>
+                        <li>Engineered specifically to hold and transport 20 water sachets per bag</li>
+                        <li>Generic Quality and Eco-conscious industrial illustrations printed on exterior</li>
+                        <li>Built for rough warehouse handling, commercial logistics, and stacking</li>
                         <li>Packaged in bundles (500 bags, 1,000 bags, or 5,000 bag bales)</li>
                     </ul>
-                    <a href="#direct-order" class="btn btn-primary" onclick="selectProductType('Water Packing Bags')">Order Packing Bags</a>
+                    <a href="#direct-order" class="btn btn-primary" onclick="selectProductType('Printed Packing Bag')">Order Printed Packing Bag</a>
+                </div>
+
+                <!-- Product 4: Shrink Wrap / SSB & MSB -->
+                <div class="product-overview-card">
+                    <!-- Dedicated Space for Product Image -->
+                    <div class="product-image-container">
+                        <img src="/static/images/shrink-wrap-ssb-msb.jpg" alt="Shrink Wrap / SSB & MSB - Bare shrink rolls alongside multicolor product bundles" class="product-img" onerror="this.onerror=null; this.src='/static/images/placeholder-product.svg';" loading="lazy" decoding="async">
+                        <span class="product-image-badge">Thermal Shrink</span>
+                    </div>
+                    <div class="product-visual-desc">
+                        <span class="visual-tag">Visual</span>
+                        <span class="visual-text">Bare shrink rolls alongside multicolor product bundles</span>
+                    </div>
+
+                    <span class="product-overview-badge">Thermal Bundling Film</span>
+                    <h3>📦 Shrink Wrap / SSB &amp; MSB</h3>
+                    <p>Industrial thermal contraction shrink film featuring bare shrink rolls alongside multicolor product bundles, optimized for Single Sachet Bag (SSB) and Multiple Sachet Bag (MSB) collation.</p>
+                    <ul class="product-spec-list">
+                        <li>High-tensile biaxial shrink ratio for tight, stable multipack collation</li>
+                        <li>Engineered for Single Sachet Bag (SSB) and Multiple Sachet Bag (MSB) packing</li>
+                        <li>Superior resistance against puncture, transit abrasion, and tears</li>
+                        <li>Hygienic dust &amp; moisture barrier protecting packaged water sachets</li>
+                        <li>Available in various widths, thicknesses, and high-clarity grades</li>
+                    </ul>
+                    <a href="#direct-order" class="btn btn-primary" onclick="selectProductType('Shrink Wrap / SSB & MSB')">Order Shrink Wrap / SSB &amp; MSB</a>
                 </div>
             </div>
         </section>
@@ -115,7 +185,7 @@
         <section id="direct-order" class="order-section">
             <div class="order-section-header">
                 <h2>Direct Factory Order Placement</h2>
-                <p>Order water packing rolls and outer bags directly from our production floor. Submit your details below and our sales team will be alerted immediately via email and webhook.</p>
+                <p>Order Plain Roll, Printed Film, Printed Packing Bag, and Shrink Wrap / SSB &amp; MSB directly from our production floor. Submit your details below and our sales team will be alerted immediately via email and webhook.</p>
             </div>
 
             <form id="direct-order-form">
@@ -123,28 +193,31 @@
                     <div class="form-group">
                         <label for="order-product-type">Product Needed *</label>
                         <select id="order-product-type" class="form-control" required>
-                            <option value="Water Packing Rolls">💧 Water Packing Rolls Only</option>
-                            <option value="Water Packing Bags">🛍️ Water Packing Bags Only</option>
-                            <option value="Both (Rolls & Bags)" selected>📦 Both (Water Packing Rolls & Outer Bags)</option>
+                            <option value="Plain Roll">💧 Plain Roll</option>
+                            <option value="Printed Film">🖨️ Printed Film</option>
+                            <option value="Printed Packing Bag">🛍️ Printed Packing Bag</option>
+                            <option value="Shrink Wrap / SSB & MSB">📦 Shrink Wrap / SSB &amp; MSB</option>
+                            <option value="Multiple Products (Custom Mix)" selected>📦 Multiple Products (Plain Roll, Printed Film, Bags, Shrink Wrap)</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="order-print-type">Printing & Branding *</label>
+                        <label for="order-print-type">Printing &amp; Customization Option *</label>
                         <select id="order-print-type" class="form-control" required>
-                            <option value="Plain / Unprinted">Plain / Unprinted</option>
+                            <option value="Plain / Standard">Plain / Standard Unprinted</option>
                             <option value="Custom Printed / Branded" selected>Custom Printed / Branded</option>
+                            <option value="Both Plain & Printed">Both Plain &amp; Printed</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="order-rolls-qty">Quantity of Rolls Needed</label>
-                        <input type="text" id="order-rolls-qty" class="form-control" placeholder="e.g. 20 Rolls or 500 kg">
+                        <label for="order-rolls-qty">Rolls / Film Quantity (Plain Roll / Printed Film)</label>
+                        <input type="text" id="order-rolls-qty" class="form-control" placeholder="e.g. 30 Plain Rolls or 500 kg Printed Film">
                     </div>
 
                     <div class="form-group">
-                        <label for="order-bags-qty">Quantity of Packing Bags Needed</label>
-                        <input type="text" id="order-bags-qty" class="form-control" placeholder="e.g. 50 Bundles or 2,500 Bags">
+                        <label for="order-bags-qty">Bags / Shrink Quantity (Printed Packing Bags / SSB & MSB)</label>
+                        <input type="text" id="order-bags-qty" class="form-control" placeholder="e.g. 100 Bag Bundles or 40 Shrink Wrap Rolls">
                     </div>
 
                     <div class="form-group">
@@ -173,12 +246,12 @@
                     </div>
 
                     <div class="form-group full-width">
-                        <label for="order-notes">Additional Notes / Print Details</label>
-                        <textarea id="order-notes" class="form-control" placeholder="Specify roll thickness (e.g. 60–75 microns), artwork status, delivery urgency, etc..."></textarea>
+                        <label for="order-notes">Additional Notes / Product Specifications</label>
+                        <textarea id="order-notes" class="form-control" placeholder="Specify roll thickness (e.g. 60–75 microns), SSB/MSB packaging requirements, artwork readiness, delivery urgency, etc..."></textarea>
                     </div>
 
                     <div class="form-group full-width">
-                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.95rem; font-size: 1.05rem;">Submit Direct Order & Alert Sales</button>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.95rem; font-size: 1.05rem;">Submit Direct Order &amp; Alert Sales</button>
                     </div>
                 </div>
             </form>
@@ -220,13 +293,14 @@
             </div>
             <div id="chat-messages" class="chat-messages"></div>
             <div class="chat-chips">
-                <button type="button" class="chip-btn" onclick="sendChatChip('Tell me about water packing rolls')">💧 Packing Rolls</button>
-                <button type="button" class="chip-btn" onclick="sendChatChip('Tell me about water packing bags')">🛍️ Packing Bags</button>
+                <button type="button" class="chip-btn" onclick="sendChatChip('Tell me about Plain Roll')">💧 Plain Roll</button>
+                <button type="button" class="chip-btn" onclick="sendChatChip('Tell me about Printed Film')">🖨️ Printed Film</button>
+                <button type="button" class="chip-btn" onclick="sendChatChip('Tell me about Printed Packing Bag')">🛍️ Printed Packing Bag</button>
+                <button type="button" class="chip-btn" onclick="sendChatChip('Tell me about Shrink Wrap / SSB & MSB')">📦 Shrink Wrap / SSB &amp; MSB</button>
                 <button type="button" class="chip-btn" onclick="sendChatChip('How do I place a direct order?')">✍️ Direct Order</button>
-                <button type="button" class="chip-btn" onclick="sendChatChip('What are your delivery timelines?')">🚚 Delivery & Hours</button>
             </div>
             <form id="chat-form" class="chat-input-form">
-                <input type="text" id="chat-input" class="chat-input" placeholder="Ask about rolls, bags, or order..." autocomplete="off" required>
+                <input type="text" id="chat-input" class="chat-input" placeholder="Ask about Plain Roll, Printed Film, Bags, Shrink Wrap..." autocomplete="off" required>
                 <button type="submit" class="chat-send-btn">Send</button>
             </form>
         </div>
@@ -236,7 +310,7 @@
         <div class="footer-container">
             <div class="footer-col">
                 <h4>Jirmass Plastics</h4>
-                <p>Specialized manufacturers of virgin LDPE Water Packing Rolls and heavy-duty Water Packing Bags for pure water bottling factories.</p>
+                <p>Specialized manufacturer of food-grade Plain Roll, high-definition Printed Film, heavy-duty Printed Packing Bag, and Shrink Wrap / SSB &amp; MSB for pure water packaging plants.</p>
             </div>
             <div class="footer-col">
                 <h4>Quick Links</h4>
@@ -246,14 +320,22 @@
                 <a href="/contact">Contact Factory Sales</a>
             </div>
             <div class="footer-col">
-                <h4>Factory Operations</h4>
-                <p>Support Hours: Mon - Fri, 8AM - 5PM</p>
-                <p>Automated Order Desk: Active 24/7</p>
-                <p>Inquiries: sales@jirmassplastics.com</p>
+                <h4>Our Locations</h4>
+                <p>📍 <strong>Otukpo:</strong> No.3 New Market Road, Otukpo, Benue State</p>
+                <p>📍 <strong>Kaduna:</strong> No.3 Kachia Road Along Station Round About, Kaduna</p>
+                <p>📍 <strong>Makurdi:</strong> No.28 Naka Road, Makurdi</p>
+            </div>
+            <div class="footer-col">
+                <h4>Contact &amp; Orders</h4>
+                <p>✉️ <a href="mailto:jirmassplasticlimited@gmail.com" style="color:#38bdf8;">jirmassplasticlimited@gmail.com</a></p>
+                <p>📞 <a href="tel:08138881463" style="color:#38bdf8;">08138881463</a></p>
+                <p>📞 <a href="tel:09036148838" style="color:#38bdf8;">09036148838</a></p>
+                <p>📞 <a href="tel:07066820641" style="color:#38bdf8;">07066820641</a></p>
+                <p>⏰ Mon - Fri, 8AM - 5PM | Bot: 24/7</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; {{.CurrentYear}} Jirmass Plastics. Specialized Water Packaging Materials.</p>
+            <p>&copy; {{.CurrentYear}} Jirmass Plastics Limited. Specialized Water Packaging Materials.</p>
         </div>
     </footer>
 
@@ -261,8 +343,9 @@
         function selectProductType(type) {
             const selectEl = document.getElementById("order-product-type");
             if (selectEl) {
+                const target = type.toLowerCase();
                 for (let i = 0; i < selectEl.options.length; i++) {
-                    if (selectEl.options[i].value.includes(type)) {
+                    if (selectEl.options[i].value.toLowerCase().includes(target)) {
                         selectEl.selectedIndex = i;
                         break;
                     }

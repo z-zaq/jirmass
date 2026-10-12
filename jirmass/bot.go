@@ -30,7 +30,7 @@ var (
 	botConfigLock sync.RWMutex
 	currentConfig = BotConfig{
 		AdminOnline:    false, // Admin is absent by default, activating auto-reply bot
-		AwayMessage:    "The sales admin is currently offline. Our automated bot is active 24/7 to assist with water packaging rolls & bags orders.",
+		AwayMessage:    "The sales admin is currently offline. Our automated bot is active 24/7 to assist with Plain Roll, Printed Film, Printed Packing Bag, and Shrink Wrap / SSB & MSB orders.",
 		OperatingHours: "Monday to Friday, 8:00 AM – 5:00 PM (GMT+1). Automated support is 24/7.",
 		DjangoAPIURL:   "http://localhost:8000/api/products",
 		LLMEnabled:     os.Getenv("GEMINI_API_KEY") != "" || os.Getenv("LLM_API_KEY") != "",
@@ -110,10 +110,11 @@ func ProcessBotMessage(req ChatRequest) ChatResponse {
 		IsAwayReply: !adminOnline,
 		Timestamp:   now,
 		SuggestedPrompts: []string{
-			"Water Packing Rolls info",
-			"Water Packing Bags info",
+			"Plain Roll info",
+			"Printed Film info",
+			"Printed Packing Bag info",
+			"Shrink Wrap / SSB & MSB info",
 			"Place a direct order",
-			"Admin status",
 		},
 	}
 
@@ -157,11 +158,11 @@ func ProcessBotMessage(req ChatRequest) ChatResponse {
 	if containsAny(lower, "admin", "human", "person", "agent", "manager", "staff", "offline", "online", "who are you") {
 		if !adminOnline {
 			resp.Reply = fmt.Sprintf(
-				"Notice: Our human sales managers are currently AWAY (%s). I am Jirmass Bot, your automated assistant. I can help you with water packing rolls & bags specifications, plain vs printed options, and order placement. To request a callback, simply leave your factory name, phone number, and requirements!",
+				"Notice: Our human sales managers are currently AWAY (%s). I am Jirmass Bot, your automated assistant. I can help you with Plain Roll, Printed Film, Printed Packing Bag, and Shrink Wrap / SSB & MSB specifications and direct order placement. To request a callback, simply leave your factory name, phone number, and requirements!",
 				awayMessage,
 			)
 		} else {
-			resp.Reply = "Our sales admin is currently online. How can we assist your pure water factory today? You can place an order directly or ask about roll specifications."
+			resp.Reply = "Our sales admin is currently online. How can we assist your pure water factory today? You can place an order directly or ask about Plain Roll, Printed Film, Bags, or Shrink Wrap specifications."
 		}
 		return resp
 	}
@@ -177,52 +178,84 @@ func ProcessBotMessage(req ChatRequest) ChatResponse {
 		}
 	}
 
-	// Case 4: Water Packing Bags (outer bags / bundling sacks)
-	if containsAny(lower, "bag", "bags", "packing bag", "outer bag", "bundle", "bale", "sack", "20 sachets") {
-		resp.Reply = "🛍️ Jirmass Water Packing Bags (Outer Bundling Bags):\n\n" +
-			"• Heavy-duty outer bags engineered to bundle and hold 20 sachets of pure water.\n" +
-			"• High puncture resistance and tear strength for rough transport and stacking.\n" +
-			"• Available in Plain and Custom Printed branding.\n" +
-			"• Packaged in convenient bundles (e.g., 500 bags per bundle, 1,000 bags, or 5,000 bag bales).\n\n" +
-			"👉 You can place a direct order for bags and rolls using the form on this page!"
-		resp.SuggestedPrompts = []string{"Water Packing Rolls info", "Place Direct Order", "Delivery timeframe"}
+	// Case 4: Shrink Wrap / SSB & MSB
+	if containsAny(lower, "shrink", "shrink wrap", "ssb", "msb", "ssb&msb", "thermal shrink", "bundling wrap") {
+		resp.Reply = "📦 Jirmass Shrink Wrap / SSB & MSB (Industrial Packaging Film):\n\n" +
+			"• High-tensile thermal contraction film calibrated for Single Sachet Bag (SSB) and Multiple Sachet Bag (MSB) collation.\n" +
+			"• Also optimized for bottled water multipack shrink wrapping.\n" +
+			"• Exceptional puncture and tear resilience preventing transit bursts.\n" +
+			"• High-clarity dust, moisture, and hygienic barrier maintaining water cleanliness.\n" +
+			"• Available in custom widths, micron gauges, and biaxial shrink contraction ratios.\n\n" +
+			"👉 You can place a direct order for Shrink Wrap / SSB & MSB using the form on this page!"
+		resp.SuggestedPrompts = []string{"Plain Roll info", "Printed Film info", "Printed Packing Bag info", "Place Direct Order"}
 		return resp
 	}
 
-	// Case 5: Water Packing Rolls (pure water / sachet packaging film)
-	if containsAny(lower, "roll", "rolls", "film", "sachet", "pure water", "320mm", "print", "printed", "gauge", "micron", "machine") {
-		resp.Reply = "💧 Jirmass Water Packing Rolls:\n\n" +
+	// Case 5: Printed Packing Bag (outer bundling sacks)
+	if containsAny(lower, "packing bag", "printed packing bag", "printed bag", "outer bag", "bundle", "bale", "sack", "20 sachets") {
+		resp.Reply = "🛍️ Jirmass Printed Packing Bag (Outer Bundling Sacks):\n\n" +
+			"• Heavy-duty outer bagging sacks engineered to securely bundle and hold 20 sachets of pure water.\n" +
+			"• High puncture resistance and reinforced tear-proof bottom seals built for rough transport.\n" +
+			"• Custom rotogravure branding with your pure water factory name, depot contact, and logo printing.\n" +
+			"• Packaged in convenient bundles (e.g., 500 bags per bundle, 1,000 bags, or 5,000 bag bales).\n\n" +
+			"👉 You can place a direct order for Printed Packing Bags using the form on this page!"
+		resp.SuggestedPrompts = []string{"Plain Roll info", "Printed Film info", "Shrink Wrap / SSB & MSB info", "Place Direct Order"}
+		return resp
+	}
+
+	// Case 6: Printed Film (custom rotogravure printed rolls)
+	if containsAny(lower, "printed film", "printed roll", "custom print", "rotogravure", "branded roll", "branding", "eye mark", "cylinder") {
+		resp.Reply = "🖨️ Jirmass Printed Film (Custom Branded Roll Film):\n\n" +
+			"• High-definition rotogravure custom printed sachet water packaging roll film.\n" +
+			"• Precision multi-color graphics with factory brand logo, NAFDAC license numbers, and batch zones.\n" +
+			"• Standard 320mm roll width with precise photo-eye registration marks for automatic form-fill-seal machines.\n" +
+			"• 100% virgin food-grade LDPE with food-safe inks that never bleed or affect water taste.\n" +
+			"• Available by roll count or bulk weight (kg).\n\n" +
+			"👉 To order Printed Film, use the Direct Order form on this page!"
+		resp.SuggestedPrompts = []string{"Plain Roll info", "Printed Packing Bag info", "Place Direct Order"}
+		return resp
+	}
+
+	// Case 7: Plain Roll (unprinted form-fill-seal film rolls)
+	if containsAny(lower, "plain roll", "plain rolls", "plain film", "unprinted", "clear roll", "320mm", "film", "gauge", "micron", "machine", "roll", "rolls", "bag", "bags") {
+		resp.Reply = "💧 Jirmass Plain Roll (Form-Fill-Seal Roll Film):\n\n" +
 			"• Standard 320mm roll width, calibrated for automated form-fill-seal packaging machines.\n" +
 			"• 100% virgin food-grade LDPE with high tensile strength for leak-free sealing.\n" +
-			"• Custom Printed Rolls: High-definition rotogravure printing with your factory brand, NAFDAC number, and batch codes.\n" +
-			"• Plain / Unprinted Rolls: High-clarity transparent film rolls.\n" +
+			"• Uniform gauge thickness (60–75 microns) and slip additives for jam-free feeding.\n" +
+			"• High-clarity transparent unprinted film rolls with zero odor.\n" +
 			"• Available by roll count or bulk weight (kg).\n\n" +
-			"👉 To order, use the Direct Order form on this page or reply with your factory name, location, and quantity needed!"
-		resp.SuggestedPrompts = []string{"Water Packing Bags info", "Place Direct Order", "How to get a quote"}
+			"👉 To order Plain Roll, use the Direct Order form on this page!"
+		resp.SuggestedPrompts = []string{"Printed Film info", "Printed Packing Bag info", "Shrink Wrap / SSB & MSB info", "Place Direct Order"}
 		return resp
 	}
 
-	// Case 6: Direct Order Placement / Pricing inquiries
+	// Case 8: Direct Order Placement / Pricing inquiries
 	if containsAny(lower, "order", "price", "cost", "quote", "rate", "how much", "buy", "wholesale", "direct") {
 		resp.Reply = "Factory-Direct Wholesale Pricing:\n\n" +
-			"Our water packaging rolls and bags are priced competitively per roll, per kg, or per bundle based on volume and print requirements.\n\n" +
+			"Our water packaging materials (Plain Roll, Printed Film, Printed Packing Bag, Shrink Wrap / SSB & MSB) are priced competitively per roll, per kg, or per bundle based on volume.\n\n" +
 			"To place your direct order immediately:\n" +
 			"1. Scroll to the 'Direct Order' section on this page.\n" +
-			"2. Select your product (Rolls, Bags, or Both) and specify quantity.\n" +
+			"2. Select your product (Plain Roll, Printed Film, Printed Packing Bag, or Shrink Wrap) and specify quantity.\n" +
 			"3. Provide your Phone/WhatsApp and Delivery address.\n\n" +
 			"Our sales team receives the alert instantly and will contact you to confirm production and delivery!"
 		resp.SuggestedPrompts = []string{"Leave my phone number", "Roll specifications", "Working hours"}
 		return resp
 	}
 
-	// Case 7: Delivery / Location / Dispatch
-	if containsAny(lower, "delivery", "shipping", "deliver", "ship", "location", "address", "where", "factory", "transport") {
-		resp.Reply = "🚚 Factory Dispatch & Logistics:\n\n" +
-			"We dispatch water packaging rolls and packing bags directly to water factories and regional depots. Standard delivery turnaround is 1–3 business days for plain rolls/bags and scheduled production runs for custom branded prints. Direct factory loading is also available."
+	// Case 9: Delivery / Location / Dispatch / Contact
+	if containsAny(lower, "delivery", "shipping", "deliver", "ship", "location", "address", "branch", "branches", "where", "factory", "plant", "otukpo", "kaduna", "makurdi", "phone", "tel", "call", "email", "contact", "office") {
+		resp.Reply = "📍 Jirmass Plastics Factory & Distribution Locations:\n\n" +
+			"1. Otukpo Branch: No.3 New Market Road, Otukpo, Benue State\n" +
+			"2. Kaduna Branch: No.3 Kachia Road Along Station Round About, Kaduna\n" +
+			"3. Makurdi Branch: No.28 Naka Road, Makurdi\n\n" +
+			"📞 Phone / WhatsApp Lines: 08138881463, 09036148838, 07066820641\n" +
+			"✉️ Email: jirmassplasticlimited@gmail.com\n\n" +
+			"🚚 We dispatch Plain Roll, Printed Film, Printed Packing Bags, and Shrink Wrap / SSB & MSB directly to pure water factories and regional depots nationwide (1–3 business days turnaround)."
+		resp.SuggestedPrompts = []string{"Place Direct Order", "Plain Roll info", "Printed Film info", "Shrink Wrap info"}
 		return resp
 	}
 
-	// Case 8: Working Hours
+	// Case 10: Working Hours
 	if containsAny(lower, "hour", "hours", "time", "open", "schedule", "when") {
 		botConfigLock.RLock()
 		hours := currentConfig.OperatingHours
@@ -231,20 +264,20 @@ func ProcessBotMessage(req ChatRequest) ChatResponse {
 		return resp
 	}
 
-	// Case 9: Greetings
+	// Case 11: Greetings
 	if containsAny(lower, "hello", "hi", "hey", "good morning", "good afternoon", "good evening", "greetings") {
-		resp.Reply = "👋 Welcome to Jirmass Plastics! We specialize exclusively in Water Packing Rolls and Water Packing Bags for pure water factories. Our admin is currently away, but you can ask about roll specs, outer bags, or place your direct order right here. How can I assist you?"
+		resp.Reply = "👋 Welcome to Jirmass Plastics! We specialize in Plain Roll, Printed Film, Printed Packing Bag, and Shrink Wrap / SSB & MSB for pure water packaging plants. Our admin is currently away, but you can ask about roll specs, bags, shrink wrap, or place your direct order right here. How can I assist you?"
 		return resp
 	}
 
-	// Case 10: Closing / Gratitude
+	// Case 12: Closing / Gratitude
 	if containsAny(lower, "thank", "thanks", "bye", "goodbye") {
-		resp.Reply = "You are most welcome! Thank you for choosing Jirmass Plastics for your water packaging supplies. Reach out anytime if you need more rolls or packing bags!"
+		resp.Reply = "You are most welcome! Thank you for choosing Jirmass Plastics for your water packaging supplies. Reach out anytime if you need more Plain Rolls, Printed Film, Packing Bags, or Shrink Wrap!"
 		return resp
 	}
 
 	// Default Fallback
-	resp.Reply = "Welcome to Jirmass Plastics — manufacturers of Water Packing Rolls and Water Packing Bags. Since our sales manager is currently offline, you can place a direct order using the form on this page, or reply with your WhatsApp/phone number and requirements to receive a fast callback."
+	resp.Reply = "Welcome to Jirmass Plastics — manufacturers of Plain Roll, Printed Film, Printed Packing Bag, and Shrink Wrap / SSB & MSB. Since our sales manager is currently offline, you can place a direct order using the form on this page, or reply with your WhatsApp/phone number and requirements to receive a fast callback."
 	return resp
 }
 
