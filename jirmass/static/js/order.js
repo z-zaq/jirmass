@@ -42,8 +42,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     const numEl = document.getElementById("conf-order-num");
                     if (numEl) numEl.textContent = data.order_number;
                     confirmModal.classList.add("active");
+                    confirmModal.focus();
                 } else {
                     alert(`Order #${data.order_number} submitted! Our sales team has been alerted via email and webhook.`);
+                }
+            } else if (res.status === 401) {
+                let errData = {};
+                try { errData = await res.json(); } catch(e) {}
+                const redirectUrl = errData.login_url || "/login?next=/#direct-order";
+                if (confirm("Authentication Required: You must sign in or create an account before placing a packaging order.\n\nClick OK to proceed to Sign In.")) {
+                    window.location.href = redirectUrl;
                 }
             } else {
                 const errText = await res.text();
@@ -58,4 +66,19 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     });
+
+    // Close modal on Escape key or outside click
+    const confirmModal = document.getElementById("order-confirmation-modal");
+    if (confirmModal) {
+        confirmModal.addEventListener("click", (e) => {
+            if (e.target === confirmModal) {
+                confirmModal.classList.remove("active");
+            }
+        });
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && confirmModal.classList.contains("active")) {
+                confirmModal.classList.remove("active");
+            }
+        });
+    }
 });

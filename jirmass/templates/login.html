@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <meta name="description" content="Sign In to your Jirmass Plastics account to place orders, track deliveries, and manage packaging inquiries.">
+    <link rel="icon" type="image/svg+xml" href="/static/images/logo-icon.svg?v=2">
+    <link rel="stylesheet" href="/static/css/style.css?v=2">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="/" class="brand" title="Jirmass Plastics Home">
+                <img src="/static/images/logo.svg" alt="Jirmass Plastics Logo" class="brand-logo-img" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                <div class="brand-fallback-logo" style="display:none;">
+                    <div class="brand-icon">J</div>
+                    <div class="brand-title">Jirmass Plastics</div>
+                </div>
+            </a>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+                <a href="/login" class="active">Sign In</a>
+                <a href="/register{{if .Next}}?next={{.Next}}{{end}}" class="btn-sm btn-primary" style="margin-left: 0.5rem; text-decoration: none;">Create Account</a>
+            </nav>
+        </div>
+    </header>
+
+    <main style="max-width: 500px; margin: 3.5rem auto; padding: 0 1.5rem;">
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.5rem; box-shadow: var(--shadow);">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <span style="font-size: 2.8rem;">💧</span>
+                <h2 style="font-size: 1.6rem; margin: 0.5rem 0; color: var(--text-main);">Sign In to Jirmass</h2>
+                <p style="color: var(--text-muted); font-size: 0.92rem;">
+                    Access your customer account or Staff Management Portal to place orders, track production, and manage inquiries.
+                </p>
+            </div>
+
+            {{if .FlashMessage}}
+            <div class="alert" style="background: #eff6ff; border: 1px solid #93c5fd; color: #1e40af; padding: 0.85rem 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.92rem;">
+                {{.FlashMessage}}
+            </div>
+            {{end}}
+
+            {{if .ErrorMessage}}
+            <div class="alert alert-error" style="background: #fef2f2; border: 1px solid #f87171; color: #b91c1c; padding: 0.85rem 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.92rem;">
+                <strong>Error:</strong> {{.ErrorMessage}}
+            </div>
+            {{end}}
+
+            <form method="POST" action="/login">
+                {{if .Next}}
+                <input type="hidden" name="next" value="{{.Next}}">
+                {{end}}
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="username" style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Username or Email Address</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter username or email" required autofocus>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="password" style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1.05rem;">
+                    Sign In to Continue
+                </button>
+            </form>
+
+            <div style="margin-top: 1.75rem; padding: 1.25rem; background: var(--bg-body); border-radius: 8px; text-align: center; font-size: 0.92rem;">
+                <span>New factory or water producer?</span><br>
+                <a href="/register{{if .Next}}?next={{.Next}}{{end}}" style="color: var(--primary); font-weight: 700; text-decoration: underline; margin-top: 0.35rem; display: inline-block;">
+                    Create a Customer Account →
+                </a>
+            </div>
+
+            <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); text-align: center; font-size: 0.85rem; color: var(--text-muted);">
+                <p>Staff &amp; Operations: Use your administrative credentials above to access the staff portal.</p>
+                <p style="margin-top: 0.5rem;"><a href="/" style="color: var(--text-muted);">← Back to Public Website</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; {{.CurrentYear}} Jirmass Plastics Limited. Pure Water Packaging Film &amp; Bag Specialists.</p>
+        </div>
+    </footer>
+</body>
+</html>

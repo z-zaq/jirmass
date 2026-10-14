@@ -288,11 +288,13 @@ func queryLLM(prompt, apiKey, model string) (string, error) {
 	apiURL := fmt.Sprintf("https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s", model, apiKey)
 
 	systemPrompt := "You are Jirmass Bot, the 24/7 automated sales assistant for Jirmass Plastics. " +
-		"We specialize EXCLUSIVELY in two products for pure water factories: " +
-		"1) Water Packing Rolls (pure water sachet packaging film rolls, standard 320mm, virgin LDPE, custom printed or plain, leak-free sealing) and " +
-		"2) Water Packing Bags (outer bundling bags holding 20 sachets of water, high-strength LDPE, bundles/bales). " +
+		"We specialize EXCLUSIVELY in four industrial water packaging products for pure water factories: " +
+		"1) Plain Roll (standard 320mm virgin LDPE roll film, 60–75 microns, jam-free feeding for automatic form-fill-seal machines), " +
+		"2) Printed Film (custom rotogravure multi-color printed film rolls with precision photo-eye registration marks and factory branding), " +
+		"3) Printed Packing Bag (heavy-duty outer bundling sacks engineered to securely hold and transport 20 sachets of pure water without bursting), and " +
+		"4) Shrink Wrap / SSB & MSB (high-tensile thermal contraction film for Single Sachet Bag [SSB] and Multiple Sachet Bag [MSB] collation, plus bottle multipacks). " +
 		"Do NOT discuss unrelated plastics like chairs, crates, buckets, or jerrycans. " +
-		"The human sales administrator is currently offline/away. Answer questions concisely and professionally, and guide the user to place a direct order."
+		"The human sales administrator is currently offline/away. Answer questions concisely and professionally, and guide the user to place a direct order or leave their contact details."
 
 	payload := map[string]interface{}{
 		"contents": []map[string]interface{}{
@@ -388,7 +390,9 @@ func forwardInquiryToDjango(name, email, phone, message, botResponse string) {
 		}
 
 		client := &http.Client{Timeout: 3 * time.Second}
-		resp, err := client.Post("http://localhost:8000/api/products/inquiries/", "application/json", bytes.NewBuffer(data))
+		backendURL := getBackendURL()
+		inquiryURL := strings.TrimRight(backendURL, "/") + "/api/products/inquiries/"
+		resp, err := client.Post(inquiryURL, "application/json", bytes.NewBuffer(data))
 		if err == nil {
 			_ = resp.Body.Close()
 		}

@@ -334,3 +334,173 @@ func TestStaticFiles(t *testing.T) {
 		}
 	}
 }
+
+func TestHealthzHandler(t *testing.T) {
+	router := SetupRouter()
+
+	endpoints := []string{"/healthz", "/api/health"}
+	for _, ep := range endpoints {
+		req := httptest.NewRequest(http.MethodGet, ep, nil)
+		rr := httptest.NewRecorder()
+		router.ServeHTTP(rr, req)
+
+		if rr.Code != http.StatusOK {
+			t.Errorf("Expected 200 OK for %s, got %d", ep, rr.Code)
+		}
+
+		var payload map[string]interface{}
+		if err := json.Unmarshal(rr.Body.Bytes(), &payload); err != nil {
+			t.Fatalf("Failed to parse JSON for %s: %v", ep, err)
+		}
+		if payload["status"] != "ok" {
+			t.Errorf("Expected status 'ok', got %v", payload["status"])
+		}
+		if payload["service"] != "jirmass-go-frontend" {
+			t.Errorf("Expected service 'jirmass-go-frontend', got %v", payload["service"])
+		}
+	}
+}
+
+func TestSecurityHeadersMiddleware(t *testing.T) {
+	router := SetupRouter()
+	handler := SecurityHeadersMiddleware(router)
+
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	rr := httptest.NewRecorder()
+	handler.ServeHTTP(rr, req)
+
+	if val := rr.Header().Get("X-Content-Type-Options"); val != "nosniff" {
+		t.Errorf("Expected X-Content-Type-Options: nosniff, got: %s", val)
+	}
+	if val := rr.Header().Get("X-Frame-Options"); val != "SAMEORIGIN" {
+		t.Errorf("Expected X-Frame-Options: SAMEORIGIN, got: %s", val)
+	}
+	if val := rr.Header().Get("Referrer-Policy"); val != "strict-origin-when-cross-origin" {
+		t.Errorf("Expected Referrer-Policy: strict-origin-when-cross-origin, got: %s", val)
+	}
+}
+
+func TestRobotsAndSitemap(t *testing.T) {
+	router := SetupRouter()
+
+	// Test /robots.txt
+	reqRobots := httptest.NewRequest(http.MethodGet, "/robots.txt", nil)
+	rrRobots := httptest.NewRecorder()
+	router.ServeHTTP(rrRobots, reqRobots)
+
+	if rrRobots.Code != http.StatusOK {
+		t.Errorf("Expected 200 OK for /robots.txt, got %d", rrRobots.Code)
+	}
+	if !strings.Contains(rrRobots.Body.String(), "User-agent: *") {
+		t.Errorf("Expected User-agent in /robots.txt")
+	}
+
+	// Test /sitemap.xml
+	reqSitemap := httptest.NewRequest(http.MethodGet, "/sitemap.xml", nil)
+	rrSitemap := httptest.NewRecorder()
+	router.ServeHTTP(rrSitemap, reqSitemap)
+
+	if rrSitemap.Code != http.StatusOK {
+		t.Errorf("Expected 200 OK for /sitemap.xml, got %d", rrSitemap.Code)
+	}
+	if !strings.Contains(rrSitemap.Body.String(), "<urlset") {
+		t.Errorf("Expected urlset XML in /sitemap.xml")
+	}
+}
+
+func TestLoginAndStaffPortal(t *testing.T) {
+	router := SetupRouter()
+
+	// 1. GET /login returns 200 OK with login form
+	reqGet := httptest.NewRequest(http.MethodGet, "/login", nil)
+	rrGet := httptest.NewRecorder()
+	router.ServeHTTP(rrGet, reqGet)
+
+	if rrGet.Code != http.StatusOK {
+		t.Errorf("Expected 200 OK for GET /login, got %d", rrGet.Code)
+	}
+	if !strings.Contains(rrGet.Body.String(), "Staff Management Portal") {
+		t.Errorf("Expected login form on /login")
+	}
+
+	// 2. POST /login with empty credentials returns 200 with flash message
+	formEmpty := url.Values{"username": {""}, "password": {""}}
+	reqEmpty := httptest.NewRequest(http.MethodPost, "/login", strings.NewReader(formEmpty.Encode()))
+	reqEmpty.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	rrEmpty := httptest.NewRecorder()
+	router.ServeHTTP(rrEmpty, reqEmpty)
+
+	if !strings.Contains(rrEmpty.Body.String(), "required") {
+		t.Errorf("Expected required fields message on empty login")
+	}
+
+	// 3. POST /login with invalid credentials returns 401
+	formBad := url.Values{"username": {"admin"}, "password": {"wrongpass"}}
+	reqBad := httptest.NewRequest(http.MethodPost, "/login", strings.NewReader(formBad.Encode()))
+	reqBad.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	rrBad := httptest.NewRecorder()
+	router.ServeHTTP(rrBad, reqBad)
+
+	if rrBad.Code != http.StatusUnauthorized {
+		t.Errorf("Expected 401 Unauthorized for bad credentials, got %d", rrBad.Code)
+	}
+
+	// 4. POST /login with valid admin credentials returns 303 redirect & sets cookie
+	formGood := url.Values{"username": {"admin"}, "password": {"admin123"}}
+	reqGood := httptest.NewRequest(http.MethodPost, "/login", strings.NewReader(formGood.Encode()))
+	reqGood.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	rrGood := httptest.NewRecorder()
+	router.ServeHTTP(rrGood, reqGood)
+
+	if rrGood.Code != http.StatusSeeOther {
+		t.Fatalf("Expected 303 See Other redirect on successful login, got %d", rrGood.Code)
+	}
+
+	cookies := rrGood.Result().Cookies()
+	var sessionCookie *http.Cookie
+	for _, c := range cookies {
+		if c.Name == "jirmass_staff_session" {
+			sessionCookie = c
+			break
+		}
+	}
+	if sessionCookie == nil || sessionCookie.Value == "" {
+		t.Fatalf("Expected jirmass_staff_session cookie to be set")
+	}
+
+	// 5. GET /admin-portal without cookie redirects to /login
+	reqPortalUnauth := httptest.NewRequest(http.MethodGet, "/admin-portal", nil)
+	rrPortalUnauth := httptest.NewRecorder()
+	router.ServeHTTP(rrPortalUnauth, reqPortalUnauth)
+
+	if rrPortalUnauth.Code != http.StatusSeeOther || rrPortalUnauth.Header().Get("Location") != "/login" {
+		t.Errorf("Expected redirect to /login for unauthenticated /admin-portal access")
+	}
+
+	// 6. GET /admin-portal with session cookie succeeds
+	reqPortalAuth := httptest.NewRequest(http.MethodGet, "/admin-portal", nil)
+	reqPortalAuth.AddCookie(sessionCookie)
+	rrPortalAuth := httptest.NewRecorder()
+	router.ServeHTTP(rrPortalAuth, reqPortalAuth)
+
+	if rrPortalAuth.Code != http.StatusOK {
+		t.Errorf("Expected 200 OK for authenticated /admin-portal, got %d", rrPortalAuth.Code)
+	}
+	if !strings.Contains(rrPortalAuth.Body.String(), "Staff &amp; Operations Dashboard") &&
+		!strings.Contains(rrPortalAuth.Body.String(), "Staff & Operations Dashboard") {
+		t.Errorf("Expected Staff Operations Dashboard content")
+	}
+
+	// 7. GET /logout clears cookie and redirects to /login
+	reqLogout := httptest.NewRequest(http.MethodGet, "/logout", nil)
+	reqLogout.AddCookie(sessionCookie)
+	rrLogout := httptest.NewRecorder()
+	router.ServeHTTP(rrLogout, reqLogout)
+
+	if rrLogout.Code != http.StatusSeeOther || rrLogout.Header().Get("Location") != "/login" {
+		t.Errorf("Expected redirect to /login on logout")
+	}
+}
+
+
+

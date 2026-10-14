@@ -32,8 +32,14 @@ class ProductDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class CustomerInquiryListCreateAPIView(generics.ListCreateAPIView):
-    queryset = CustomerInquiry.objects.all()
     serializer_class = CustomerInquirySerializer
+
+    def get_queryset(self):
+        qs = CustomerInquiry.objects.all()
+        email = self.request.query_params.get("email")
+        if email:
+            qs = qs.filter(email__iexact=email.strip())
+        return qs
 
     def perform_create(self, serializer):
         inquiry = serializer.save()
@@ -94,8 +100,14 @@ class AdminAvailabilityAPIView(APIView):
 
 
 class OrderListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+    def get_queryset(self):
+        qs = Order.objects.all()
+        email = self.request.query_params.get("email")
+        if email:
+            qs = qs.filter(customer_email__iexact=email.strip())
+        return qs
 
     def perform_create(self, serializer):
         # Auto-generate order number if not supplied
@@ -165,6 +177,27 @@ class DashboardStatsAPIView(APIView):
         )
 
 
+class HealthCheckAPIView(APIView):
+    """Health check endpoint for container and uptime monitoring."""
+
+    def get(self, request, *args, **kwargs):
+        from django.db import connection
+        db_status = "connected"
+        try:
+            connection.ensure_connection()
+        except Exception as e:
+            db_status = f"unhealthy: {str(e)}"
+            return Response(
+                {"status": "degraded", "service": "jirmass-django-backend", "database": db_status},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+
+        return Response(
+            {"status": "ok", "service": "jirmass-django-backend", "database": db_status},
+            status=status.HTTP_200_OK,
+        )
+
+
 class TestAlertAPIView(APIView):
     """Triggers a test email & webhook notification for admin verification."""
 
@@ -181,3 +214,148 @@ class TestAlertAPIView(APIView):
             {"message": "Test alert dispatched to configured email and webhook."},
             status=status.HTTP_200_OK,
         )
+
+
+class UserLoginAPIView(APIView):
+    """Authenticates customers, staff, and administrative users by username or email."""
+
+    def post(self, request, *args, **kwargs):
+        from django.contrib.auth import authenticate
+        from django.contrib.auth.models import User
+
+        username = request.data.get("username", "").strip()
+        password = request.data.get("password", "")
+
+        if not username or not password:
+            return Response(
+                {"success": False, "error": "Username or email and password are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = authenticate(request, username=username, password=password)
+        if user is None:
+            # Check if input is an email address
+            user_obj = User.objects.filter(email__iexact=username).first()
+            if user_obj:
+                user = authenticate(request, username=user_obj.username, password=password)
+
+        if user is None:
+            return Response(
+                {"success": False, "error": "Invalid username/email or password."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        if not user.is_active:
+            return Response(
+                {"success": False, "error": "Account is disabled."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        full_name = user.get_full_name() or user.first_name or user.username
+        company_name = user.last_name or ""
+
+        return Response(
+            {
+                "success": True,
+                "user": {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "name": full_name,
+                    "company_name": company_name,
+                    "is_staff": user.is_staff,
+                    "is_superuser": user.is_superuser,
+                },
+                "username": user.username,
+                "email": user.email,
+                "name": full_name,
+                "company_name": company_name,
+                "is_staff": user.is_staff,
+                "is_superuser": user.is_superuser,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+StaffLoginAPIView = UserLoginAPIView
+
+
+class UserRegisterAPIView(APIView):
+    """Registers a new customer account for water packaging ordering and inquiries."""
+
+    def post(self, request, *args, **kwargs):
+        from django.contrib.auth.models import User
+
+        name = request.data.get("name", "").strip()
+        company_name = request.data.get("company_name", "").strip()
+        email = request.data.get("email", "").strip().lower()
+        username = request.data.get("username", "").strip()
+        password = request.data.get("password", "")
+
+        if not email or "@" not in email:
+            return Response(
+                {"success": False, "error": "A valid email address is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not password or len(password) < 6:
+            return Response(
+                {"success": False, "error": "Password must be at least 6 characters long."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if User.objects.filter(email__iexact=email).exists():
+            return Response(
+                {"success": False, "error": "An account with this email address already exists. Please log in."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not username:
+            base_username = email.split("@")[0]
+            # Strip invalid username chars
+            cleaned_base = "".join(c for c in base_username if c.isalnum() or c in "_-")
+            if not cleaned_base:
+                cleaned_base = "user"
+            username = cleaned_base
+            counter = 1
+            while User.objects.filter(username__iexact=username).exists():
+                username = f"{cleaned_base}{counter}"
+                counter += 1
+        else:
+            if User.objects.filter(username__iexact=username).exists():
+                return Response(
+                    {"success": False, "error": "This username is already taken. Please choose another."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            first_name=name,
+            last_name=company_name,
+        )
+
+        return Response(
+            {
+                "success": True,
+                "message": "Account created successfully.",
+                "user": {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "name": name or user.username,
+                    "company_name": company_name,
+                    "is_staff": False,
+                    "is_superuser": False,
+                },
+                "username": user.username,
+                "email": user.email,
+                "name": name or user.username,
+                "company_name": company_name,
+                "is_staff": False,
+                "is_superuser": False,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+

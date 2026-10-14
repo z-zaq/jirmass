@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <meta name="description" content="Create a customer account with Jirmass Plastics for direct water packaging rolls, outer bags, and custom film printing.">
+    <link rel="icon" type="image/svg+xml" href="/static/images/logo-icon.svg?v=2">
+    <link rel="stylesheet" href="/static/css/style.css?v=2">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="/" class="brand" title="Jirmass Plastics Home">
+                <img src="/static/images/logo.svg" alt="Jirmass Plastics Logo" class="brand-logo-img" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                <div class="brand-fallback-logo" style="display:none;">
+                    <div class="brand-icon">J</div>
+                    <div class="brand-title">Jirmass Plastics</div>
+                </div>
+            </a>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+                <a href="/login{{if .Next}}?next={{.Next}}{{end}}">Sign In</a>
+                <a href="/register" class="btn-sm btn-primary active" style="margin-left: 0.5rem; text-decoration: none;">Create Account</a>
+            </nav>
+        </div>
+    </header>
+
+    <main style="max-width: 540px; margin: 3rem auto; padding: 0 1.5rem;">
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.5rem; box-shadow: var(--shadow);">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <span style="font-size: 2.8rem;">🏭</span>
+                <h2 style="font-size: 1.6rem; margin: 0.5rem 0; color: var(--text-main);">Create Customer Account</h2>
+                <p style="color: var(--text-muted); font-size: 0.92rem;">
+                    Register your pure water bottling plant or distribution company for direct orders, sample requests, and wholesale film delivery.
+                </p>
+            </div>
+
+            {{if .ErrorMessage}}
+            <div class="alert alert-error" style="background: #fef2f2; border: 1px solid #f87171; color: #b91c1c; padding: 0.85rem 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.92rem;">
+                <strong>Error:</strong> {{.ErrorMessage}}
+            </div>
+            {{end}}
+
+            <form method="POST" action="/register">
+                {{if .Next}}
+                <input type="hidden" name="next" value="{{.Next}}">
+                {{end}}
+
+                <div class="form-group" style="margin-bottom: 1.15rem;">
+                    <label for="name" style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Representative Full Name *</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Alhassan Danjuma" required autofocus>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.15rem;">
+                    <label for="company_name" style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Company / Water Factory Name</label>
+                    <input type="text" id="company_name" name="company_name" class="form-control" placeholder="e.g. Crystal Springs Water Ltd">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.15rem;">
+                    <label for="email" style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Email Address *</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="e.g. factory@example.com" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.15rem;">
+                    <label for="phone" style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Phone / WhatsApp Number</label>
+                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="e.g. +234 800 123 4567">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.15rem;">
+                    <label for="password" style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Password (min. 6 characters) *</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required minlength="6">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="confirm_password" style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Confirm Password *</label>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="••••••••" required minlength="6">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1.05rem;">
+                    Create Account &amp; Proceed
+                </button>
+            </form>
+
+            <div style="margin-top: 1.75rem; padding: 1.25rem; background: var(--bg-body); border-radius: 8px; text-align: center; font-size: 0.92rem;">
+                <span>Already registered with Jirmass?</span><br>
+                <a href="/login{{if .Next}}?next={{.Next}}{{end}}" style="color: var(--primary); font-weight: 700; text-decoration: underline; margin-top: 0.35rem; display: inline-block;">
+                    Sign In to Existing Account →
+                </a>
+            </div>
+
+            <div style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem;">
+                <a href="/" style="color: var(--text-muted);">← Back to Public Website</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; {{.CurrentYear}} Jirmass Plastics Limited. Premium Water Packaging Rolls &amp; Sacks.</p>
+        </div>
+    </footer>
+</body>
+</html>

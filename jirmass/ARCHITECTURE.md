@@ -1,4 +1,4 @@
-a# Jirmass Architecture
+# Jirmass Architecture
 
 This document details the software architecture, component relationships, data flow, and directory structure of the **Jirmass** water packaging platform.
 
@@ -178,10 +178,16 @@ jirmass/
 
 | Variable | Target Component | Default | Description |
 |---|---|---|---|
+| `PORT` | Go Server (`main.go`) | `8081` | HTTP port for the customer-facing frontend server. |
+| `BACKEND_URL` | Go Server (`main.go`, `bot.go`) | `http://localhost:8000` | URL of the Django backend API service. |
 | `GEMINI_API_KEY` / `LLM_API_KEY` | Go Server (`bot.go`) | `""` | Google Gemini API key for dynamic AI support responses. |
 | `LLM_MODEL` | Go Server (`bot.go`) | `gemini-1.5-flash` | Gemini model variant to use. |
 | `ADMIN_WEBHOOK_URL` | Go Server & Django | `""` | Destination webhook URL for instant staff alerts. |
 | `DJANGO_API_URL` | Go Server (`bot.go`) | `http://localhost:8000/api/products` | REST endpoint for backend synchronization. |
+| `DJANGO_SECRET_KEY` | Django Backend | `django-insecure-...` | Production cryptographic secret key. |
+| `DJANGO_DEBUG` | Django Backend | `True` (dev default) | Set to `False` in production deployment. |
+| `DJANGO_ALLOWED_HOSTS` | Django Backend | `localhost,127.0.0.1,0.0.0.0` | Comma-delimited list of host/domain names Django can serve. |
+| `DJANGO_EMAIL_BACKEND` | Django Backend | `django.core.mail.backends.console.EmailBackend` | Email delivery backend. |
 
 ---
 

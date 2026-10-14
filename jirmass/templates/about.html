@@ -4,8 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Title}}</title>
+    <meta name="description" content="About Jirmass Plastics - Specialized film extrusion and outer packing bag manufacturing for automated pure water packaging factories.">
+    <meta name="keywords" content="water packaging manufacturing, virgin LDPE extrusion, plain roll standards, rotogravure printed film, sachet water bags">
+    <meta property="og:title" content="{{.Title}}">
+    <meta property="og:description" content="Specialized film extrusion and outer packing bag manufacturing for pure water factories.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/static/images/logo.svg">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{.Title}}">
+    <meta name="twitter:description" content="Dedicated to pure water packaging excellence with 100% virgin food-grade LDPE polymer.">
     <link rel="icon" type="image/svg+xml" href="/static/images/logo-icon.svg?v=2">
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/style.css?v=2">
 </head>
 <body>
     <header>
@@ -22,9 +31,20 @@
                 <a href="/#direct-order" class="nav-order-btn">Order Now</a>
                 <a href="/about" class="active">About</a>
                 <a href="/contact">Contact</a>
+                {{if .IsAuthenticated}}
+                    {{if .User.IsStaff}}
+                    <a href="/admin-portal" style="color: var(--primary); font-weight: 600;">Staff Portal</a>
+                    {{else}}
+                    <a href="/account" style="color: var(--primary); font-weight: 600;">My Orders</a>
+                    {{end}}
+                    <a href="/logout" style="color: #ef4444; font-size: 0.9rem;">Sign Out</a>
+                {{else}}
+                    <a href="/login">Sign In</a>
+                    <a href="/register" class="btn-sm btn-primary" style="margin-left: 0.25rem; text-decoration: none;">Register</a>
+                {{end}}
                 <div class="admin-badge">
-                    <span class="admin-badge-dot"></span>
-                    <span>Admin Offline • Bot Active</span>
+                    <span class="admin-badge-dot" style="{{if .AdminOnline}}background: #10b981;{{end}}"></span>
+                    <span>{{if .AdminOnline}}Admin Online{{else}}Admin Offline • Bot Active{{end}}</span>
                 </div>
             </nav>
         </div>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="icon" type="image/svg+xml" href="/static/images/logo-icon.svg?v=2">
+    <link rel="stylesheet" href="/static/css/style.css?v=2">
+    <style>
+        .portal-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .portal-stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        .portal-stat-val {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0.35rem 0;
+        }
+        .portal-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: var(--surface);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        .portal-table th, .portal-table td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.92rem;
+        }
+        .portal-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-confirmed { background: #dbeafe; color: #1e40af; }
+        .status-shipped { background: #d1fae5; color: #065f46; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="/" class="brand" title="Jirmass Plastics Home">
+                <img src="/static/images/logo.svg" alt="Jirmass Plastics Logo" class="brand-logo-img" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                <div class="brand-fallback-logo" style="display:none;">
+                    <div class="brand-icon">J</div>
+                    <div class="brand-title">Jirmass Plastics</div>
+                </div>
+            </a>
+            <nav>
+                <a href="/">Public Site</a>
+                <a href="/admin-portal" class="active">Staff Portal</a>
+                <a href="http://localhost:8000/admin/" target="_blank" style="color: var(--primary); font-weight: 600;">Django Admin ↗</a>
+                <a href="/logout" style="color: #ef4444; font-weight: 600;">Sign Out</a>
+            </nav>
+        </div>
+    </header>
+
+    <main style="max-width: 1200px; margin: 2.5rem auto; padding: 0 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+            <div>
+                <h1 style="font-size: 1.85rem; margin-bottom: 0.35rem;">Staff &amp; Operations Dashboard</h1>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Authenticated as <strong>{{.Username}}</strong> • Jirmass Plastics Factory Management</p>
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <form method="POST" action="/admin-portal/toggle-status" style="margin: 0;">
+                    {{if .AdminOnline}}
+                    <button type="submit" class="btn btn-secondary" style="background: #fee2e2; border-color: #fca5a5; color: #991b1b;">
+                        🔴 Set Admin Offline (Enable Away Bot)
+                    </button>
+                    {{else}}
+                    <button type="submit" class="btn btn-primary" style="background: #10b981; border-color: #059669;">
+                        🟢 Set Admin Online (Active Staff)
+                    </button>
+                    {{end}}
+                </form>
+                <a href="http://localhost:8000/admin/" target="_blank" class="btn btn-secondary">
+                    ⚙️ Django Database Admin
+                </a>
+            </div>
+        </div>
+
+        {{if .FlashMessage}}
+        <div class="alert alert-success" style="margin-bottom: 1.5rem;">
+            {{.FlashMessage}}
+        </div>
+        {{end}}
+
+        <!-- Metrics Overview -->
+        <div class="portal-stats">
+            <div class="portal-stat-card">
+                <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Staff Availability</span>
+                <div class="portal-stat-val" style="color: {{if .AdminOnline}}#10b981{{else}}#f59e0b{{end}};">
+                    {{if .AdminOnline}}ONLINE{{else}}AWAY{{end}}
+                </div>
+                <small style="color: var(--text-muted);">{{if .AdminOnline}}Human staff handling chats{{else}}24/7 Automated bot answering{{end}}</small>
+            </div>
+            <div class="portal-stat-card">
+                <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Total Orders</span>
+                <div class="portal-stat-val">{{.TotalOrders}}</div>
+                <small style="color: var(--text-muted);">Plain Roll, Printed Film, Bags, Shrink</small>
+            </div>
+            <div class="portal-stat-card">
+                <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Customer Inquiries</span>
+                <div class="portal-stat-val">{{.TotalInquiries}}</div>
+                <small style="color: var(--text-muted);">Logged via 24/7 support bot &amp; form</small>
+            </div>
+            <div class="portal-stat-card">
+                <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Active Products</span>
+                <div class="portal-stat-val">4</div>
+                <small style="color: var(--text-muted);">Factory Water Packaging Catalog</small>
+            </div>
+        </div>
+
+        <!-- Recent Wholesale Orders -->
+        <section style="margin-bottom: 3rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <h2 style="font-size: 1.35rem;">Recent Direct Water Packaging Orders</h2>
+                <a href="http://localhost:8000/admin/products/order/" target="_blank" style="color: var(--primary); font-size: 0.9rem; font-weight: 600;">Manage in Django Admin →</a>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="portal-table">
+                    <thead>
+                        <tr>
+                            <th>Order Ref</th>
+                            <th>Pure Water Factory / Contact</th>
+                            <th>Phone / WhatsApp</th>
+                            <th>Delivery Address</th>
+                            <th>Details &amp; Notes</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Orders}}
+                        <tr>
+                            <td><strong>{{.OrderNumber}}</strong></td>
+                            <td>{{.CustomerName}}</td>
+                            <td><a href="tel:{{.CustomerPhone}}" style="color: var(--primary);">{{.CustomerPhone}}</a></td>
+                            <td>{{.ShippingAddress}}</td>
+                            <td style="max-width: 320px; font-size: 0.85rem; color: var(--text-muted);">{{.Notes}}</td>
+                            <td>
+                                <span class="status-badge status-{{.Status}}">{{.Status}}</span>
+                            </td>
+                        </tr>
+                        {{else}}
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No orders logged yet. Orders placed on the public website will appear here in real-time.</td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Recent Customer Inquiries -->
+        <section>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <h2 style="font-size: 1.35rem;">Recent Automated Bot Leads &amp; Inquiries</h2>
+                <a href="http://localhost:8000/admin/products/customerinquiry/" target="_blank" style="color: var(--primary); font-size: 0.9rem; font-weight: 600;">Manage in Django Admin →</a>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="portal-table">
+                    <thead>
+                        <tr>
+                            <th>Contact Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Inquiries}}
+                        <tr>
+                            <td><strong>{{.Name}}</strong></td>
+                            <td>{{.Email}}</td>
+                            <td>{{.Phone}}</td>
+                            <td style="max-width: 400px; font-size: 0.85rem; color: var(--text-muted);">{{.Message}}</td>
+                            <td><span class="status-badge status-pending">{{.Status}}</span></td>
+                        </tr>
+                        {{else}}
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No inquiries logged yet. Inquiries captured by the bot will appear here.</td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; {{.CurrentYear}} Jirmass Plastics Limited. Operations &amp; Support Management Portal.</p>
+        </div>
+    </footer>
+</body>
+</html>

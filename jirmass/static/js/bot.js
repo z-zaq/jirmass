@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderWelcomeMessage() {
         appendMessage(
             "bot",
-            "👋 Welcome to Jirmass Plastics!\n\nOur administrative team is currently OFFLINE / AWAY. I am Jirmass Bot, your 24/7 automated assistant.\n\nHow can I help you today? You can ask about our plastic products, bulk quotation rates, delivery timelines, or leave a message for our staff."
+            "👋 Welcome to Jirmass Plastics!\n\nOur administrative team is currently OFFLINE / AWAY. I am Jirmass Bot, your 24/7 automated assistant.\n\nHow can I assist your pure water factory today? You can ask about Plain Roll, Printed Film, Printed Packing Bags, Shrink Wrap / SSB & MSB, place a direct factory order, or request a quick callback."
         );
     }
 

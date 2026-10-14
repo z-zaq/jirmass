@@ -188,7 +188,7 @@ def dispatch_admin_notification(event_type: str, title: str, details: dict):
                 fail_silently=True,
             )
         except Exception as e:
-            logger.warning("Failed to send email alert: %v", e)
+            logger.warning("Failed to send email alert: %s", e)
 
     # 2. Webhook notification (dispatched asynchronously)
     if setting.webhook_alerts_enabled and setting.webhook_url:

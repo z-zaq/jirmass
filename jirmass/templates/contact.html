@@ -4,8 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Title}}</title>
+    <meta name="description" content="Contact Jirmass Plastics factory sales and production desk for Plain Roll, Printed Film, Printed Packing Bags, and Shrink Wrap wholesale orders.">
+    <meta name="keywords" content="contact water packaging supplier, buy plain rolls, printed film quote, pure water outer bag supplier, Otukpo, Kaduna, Makurdi">
+    <meta property="og:title" content="{{.Title}}">
+    <meta property="og:description" content="Connect with our sales and manufacturing desk for bulk pure water packaging supplies.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/static/images/logo.svg">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{.Title}}">
+    <meta name="twitter:description" content="Connect directly with Jirmass Plastics sales engineers and order factory supplies.">
     <link rel="icon" type="image/svg+xml" href="/static/images/logo-icon.svg?v=2">
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/style.css?v=2">
 </head>
 <body>
     <header>
@@ -22,9 +31,20 @@
                 <a href="/#direct-order" class="nav-order-btn">Order Now</a>
                 <a href="/about">About</a>
                 <a href="/contact" class="active">Contact</a>
+                {{if .IsAuthenticated}}
+                    {{if .User.IsStaff}}
+                    <a href="/admin-portal" style="color: var(--primary); font-weight: 600;">Staff Portal</a>
+                    {{else}}
+                    <a href="/account" style="color: var(--primary); font-weight: 600;">My Orders</a>
+                    {{end}}
+                    <a href="/logout" style="color: #ef4444; font-size: 0.9rem;">Sign Out</a>
+                {{else}}
+                    <a href="/login">Sign In</a>
+                    <a href="/register" class="btn-sm btn-primary" style="margin-left: 0.25rem; text-decoration: none;">Register</a>
+                {{end}}
                 <div class="admin-badge">
-                    <span class="admin-badge-dot"></span>
-                    <span>Admin Offline • Bot Active</span>
+                    <span class="admin-badge-dot" style="{{if .AdminOnline}}background: #10b981;{{end}}"></span>
+                    <span>{{if .AdminOnline}}Admin Online{{else}}Admin Offline • Bot Active{{end}}</span>
                 </div>
             </nav>
         </div>
@@ -42,6 +62,12 @@
         </div>
         {{end}}
 
+        {{if .ErrorMessage}}
+        <div class="alert alert-error" style="background: #fef2f2; border: 1px solid #f87171; color: #b91c1c; padding: 0.85rem 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.92rem;">
+            <strong>Notice:</strong> {{.ErrorMessage}}
+        </div>
+        {{end}}
+
         <div class="contact-container">
             <div>
                 <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">Direct Message to Factory Sales</h3>
@@ -49,20 +75,26 @@
                     If the sales admin is offline, our automated system logs your request and alerts our managers immediately via email and webhook.
                 </p>
 
+                {{if not .IsAuthenticated}}
+                <div style="background: #eff6ff; border: 1px solid #93c5fd; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; font-size: 0.92rem; color: #1e40af;">
+                    <strong>Account Required:</strong> Please <a href="/login?next=/contact" style="font-weight: 700; text-decoration: underline;">Sign In</a> or <a href="/register?next=/contact" style="font-weight: 700; text-decoration: underline;">Create an Account</a> before submitting an inquiry so our sales desk can link your company records.
+                </div>
+                {{end}}
+
                 <form method="POST" action="/contact">
                     <div class="form-group">
                         <label for="name">Contact Person / Factory Name *</label>
-                        <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Alhassan Danjuma (Crystal Waters)" required>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Alhassan Danjuma (Crystal Waters)" value="{{if .User.FullName}}{{.User.FullName}}{{else if .User.Username}}{{.User.Username}}{{end}}" required>
                     </div>
 
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" class="form-control" placeholder="sales@crystalwaters.com">
+                        <input type="email" id="email" name="email" class="form-control" placeholder="sales@crystalwaters.com" value="{{.User.Email}}">
                     </div>
 
                     <div class="form-group">
                         <label for="phone">Phone / WhatsApp Number *</label>
-                        <input type="text" id="phone" name="phone" class="form-control" placeholder="+234 800 000 0000" required>
+                        <input type="text" id="phone" name="phone" class="form-control" placeholder="+234 800 000 0000" value="{{.User.Phone}}" required>
                     </div>
 
                     <div class="form-group">

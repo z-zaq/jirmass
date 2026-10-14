@@ -245,6 +245,37 @@ class JirmassHTTPHandler(http.server.BaseHTTPRequestHandler):
                 self.send_error(404, "Static file not found")
                 return
 
+        # Health check
+        if path in ("/healthz", "/api/health"):
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({"status": "ok", "service": "jirmass-dev-server"}).encode("utf-8"))
+            return
+
+        # Robots & Sitemap
+        if path == "/robots.txt":
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"User-agent: *\nAllow: /\nDisallow: /api/\n")
+            return
+
+        if path == "/sitemap.xml":
+            xml = (
+                '<?xml version="1.0" encoding="UTF-8"?>\n'
+                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+                '  <url><loc>http://localhost:8081/</loc><priority>1.0</priority></url>\n'
+                '  <url><loc>http://localhost:8081/about</loc><priority>0.8</priority></url>\n'
+                '  <url><loc>http://localhost:8081/contact</loc><priority>0.8</priority></url>\n'
+                '</urlset>'
+            )
+            self.send_response(200)
+            self.send_header("Content-Type", "application/xml; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(xml.encode("utf-8"))
+            return
+
         # Bot status
         if path == "/api/bot/status":
             self.send_response(200)
@@ -296,6 +327,43 @@ class JirmassHTTPHandler(http.server.BaseHTTPRequestHandler):
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()
             self.wfile.write(body)
+            return
+
+        if path == "/login":
+            body = render_template("login.html", {
+                "Title": "Staff Portal Login - Jirmass Plastics",
+                "FlashMessage": "",
+                "CurrentYear": datetime.now().year,
+            })
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
+        if path == "/logout":
+            self.send_response(303)
+            self.send_header("Location", "/login")
+            self.end_headers()
+            return
+
+        if path == "/admin-portal":
+            body = render_template("portal.html", {
+                "Title": "Staff & Operations Portal - Jirmass Plastics",
+                "Username": "admin",
+                "AdminOnline": False,
+                "TotalOrders": 1,
+                "TotalInquiries": 0,
+                "Orders": [],
+                "Inquiries": [],
+                "CurrentYear": datetime.now().year,
+            })
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
         if path == "/favicon.ico":
             icon_path = os.path.join(STATIC_DIR, "images", "logo-icon.svg")
             if os.path.isfile(icon_path):
@@ -314,6 +382,34 @@ class JirmassHTTPHandler(http.server.BaseHTTPRequestHandler):
         path = parsed.path
         length = int(self.headers.get("Content-Length", 0))
         post_data = self.rfile.read(length)
+
+        # Login submission
+        if path == "/login":
+            params = urllib.parse.parse_qs(post_data.decode("utf-8"))
+            username = params.get("username", [""])[0]
+            password = params.get("password", [""])[0]
+            if username == "admin" and (password == "admin123" or password == "admin"):
+                self.send_response(303)
+                self.send_header("Location", "/admin-portal")
+                self.end_headers()
+                return
+            else:
+                body = render_template("login.html", {
+                    "Title": "Staff Portal Login - Jirmass Plastics",
+                    "FlashMessage": "Invalid username or password.",
+                    "CurrentYear": datetime.now().year,
+                })
+                self.send_response(401)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.end_headers()
+                self.wfile.write(body)
+                return
+
+        if path == "/admin-portal/toggle-status":
+            self.send_response(303)
+            self.send_header("Location", "/admin-portal")
+            self.end_headers()
+            return
 
         # Contact form submission
         if path == "/contact":

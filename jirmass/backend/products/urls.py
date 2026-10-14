@@ -9,6 +9,10 @@ from .views import (
     OrderDetailAPIView,
     DashboardStatsAPIView,
     TestAlertAPIView,
+    HealthCheckAPIView,
+    StaffLoginAPIView,
+    UserLoginAPIView,
+    UserRegisterAPIView,
 )
 
 urlpatterns = [
@@ -21,4 +25,8 @@ urlpatterns = [
     path("orders/<int:pk>/", OrderDetailAPIView.as_view(), name="order-detail"),
     path("dashboard-stats/", DashboardStatsAPIView.as_view(), name="dashboard-stats"),
     path("test-alert/", TestAlertAPIView.as_view(), name="test-alert"),
+    path("health/", HealthCheckAPIView.as_view(), name="backend-health"),
+    path("auth/login/", UserLoginAPIView.as_view(), name="user-login"),
+    path("auth/staff-login/", StaffLoginAPIView.as_view(), name="staff-login"),
+    path("auth/register/", UserRegisterAPIView.as_view(), name="user-register"),
 ]

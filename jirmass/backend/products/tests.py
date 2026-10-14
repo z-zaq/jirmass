@@ -274,3 +274,140 @@ class DashboardStatsAPITest(APITestCase):
         response = self.client.post(url, {"sender": "Test Suite"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(mail.outbox), 1)
+
+
+class HealthCheckAPITest(APITestCase):
+    def test_health_check_endpoint(self):
+        url = reverse("backend-health")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get("status"), "ok")
+        self.assertEqual(response.data.get("database"), "connected")
+
+    def test_root_healthz_endpoint(self):
+        url = reverse("root-healthz")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get("status"), "ok")
+
+
+class StaffLoginAPITest(APITestCase):
+    def setUp(self):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        self.user = User.objects.create_user(
+            username="staff_member", password="securepassword123", is_staff=True
+        )
+
+    def test_successful_staff_login(self):
+        url = reverse("staff-login")
+        payload = {"username": "staff_member", "password": "securepassword123"}
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data.get("success"))
+        self.assertEqual(response.data.get("username"), "staff_member")
+        self.assertTrue(response.data.get("is_staff"))
+
+    def test_invalid_credentials(self):
+        url = reverse("staff-login")
+        payload = {"username": "staff_member", "password": "wrongpassword"}
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertFalse(response.data.get("success"))
+
+    def test_empty_credentials(self):
+        url = reverse("staff-login")
+        response = self.client.post(url, {}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_customer_email_login(self):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        User.objects.create_user(
+            username="aquaflow_client",
+            email="manager@aquaflow.com",
+            password="clientpass123",
+            first_name="AquaFlow Factory",
+        )
+        url = reverse("user-login")
+        # Login using email instead of username
+        payload = {"username": "manager@aquaflow.com", "password": "clientpass123"}
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data.get("success"))
+        self.assertEqual(response.data.get("username"), "aquaflow_client")
+        self.assertFalse(response.data.get("is_staff"))
+
+
+class UserRegisterAPITest(APITestCase):
+    def test_successful_registration(self):
+        url = reverse("user-register")
+        payload = {
+            "name": "Ibrahim Bello",
+            "company_name": "Crystal Waters Ltd",
+            "email": "ibrahim@crystalwaters.com",
+            "password": "strongpassword123",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(response.data.get("success"))
+        self.assertEqual(response.data.get("email"), "ibrahim@crystalwaters.com")
+
+    def test_duplicate_email_registration(self):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        User.objects.create_user(
+            username="existinguser",
+            email="existing@example.com",
+            password="password123",
+        )
+        url = reverse("user-register")
+        payload = {
+            "name": "New User",
+            "email": "existing@example.com",
+            "password": "password123",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(response.data.get("success"))
+
+    def test_short_password_registration(self):
+        url = reverse("user-register")
+        payload = {
+            "name": "Short Pass User",
+            "email": "short@example.com",
+            "password": "123",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class OrderAndInquiryFilterAPITest(APITestCase):
+    def test_order_email_filter(self):
+        Order.objects.create(
+            order_number="ORD-FILTER-1",
+            customer_name="Client A",
+            customer_email="clientA@test.com",
+            customer_phone="123",
+            shipping_address="Address A",
+            total_amount=Decimal("100.00"),
+        )
+        Order.objects.create(
+            order_number="ORD-FILTER-2",
+            customer_name="Client B",
+            customer_email="clientB@test.com",
+            customer_phone="456",
+            shipping_address="Address B",
+            total_amount=Decimal("200.00"),
+        )
+
+        url = reverse("order-list-create")
+        res_all = self.client.get(url)
+        self.assertEqual(len(res_all.data), 2)
+
+        res_filtered = self.client.get(f"{url}?email=clientA@test.com")
+        self.assertEqual(len(res_filtered.data), 1)
+        self.assertEqual(res_filtered.data[0]["order_number"], "ORD-FILTER-1")
+
+
+
