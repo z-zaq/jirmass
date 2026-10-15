@@ -34,7 +34,22 @@ Each of the four core products has a dedicated, pre-styled space on the website 
 
 ---
 
-## 3. Upload Via Django Admin
+## 3. Manufacturing Feature Assets
+
+The homepage Manufacturing Features section renders standardized 800×600 vector SVG cards:
+
+| Filename | Feature | Description |
+| :--- | :--- | :--- |
+| `leak-proof-sealing.svg` | **Leak-Proof Sealing** | 800×600 standardized card with virgin LDPE seal integrity, sachet water illustration, and seal callout |
+| `high-definition-printing.svg` | **High-Definition Printing** | 800×600 standardized card with rotogravure packaging line and NAFDAC print detail |
+| `machine-calibrated-320mm.svg` | **320mm Machine Calibrated** | 800×600 standardized card with 320mm roll caliper, feeder mechanics, and specification badges |
+| `fast-factory-dispatch.svg` | **Fast Factory Dispatch** | 800×600 standardized card with pure water logistics vehicle and factory dispatch staging |
+
+*(Legacy aliases `feature-leak-proof.svg`, `feature-hd-printing.svg`, `feature-calibration.svg`, and `feature-dispatch.svg` are preserved for backward compatibility).*
+
+---
+
+## 4. Upload Via Django Admin
 Log in to Django Admin at `http://localhost:8000/admin/`:
 - **Products Dashboard**: Upload direct product photos under **Products**.
 - **Brand Customization**: Upload company logo, hero banner, and favicon under **Brand Graphic & Asset Customizations**.

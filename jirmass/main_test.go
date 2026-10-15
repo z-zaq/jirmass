@@ -323,6 +323,14 @@ func TestStaticFiles(t *testing.T) {
 		"/static/images/printed-packing-bag.jpg",
 		"/static/images/shrink-wrap-ssb-msb.jpg",
 		"/static/images/placeholder-product.svg",
+		"/static/images/leak-proof-sealing.svg",
+		"/static/images/high-definition-printing.svg",
+		"/static/images/machine-calibrated-320mm.svg",
+		"/static/images/fast-factory-dispatch.svg",
+		"/static/images/feature-leak-proof.svg",
+		"/static/images/feature-hd-printing.svg",
+		"/static/images/feature-calibration.svg",
+		"/static/images/feature-dispatch.svg",
 	}
 
 	for _, imgPath := range productImages {
