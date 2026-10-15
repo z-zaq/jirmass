@@ -256,14 +256,23 @@ func SitemapHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getBackendURL() string {
-	if val := os.Getenv("BACKEND_URL"); val != "" {
-		return val
+	val := os.Getenv("BACKEND_URL")
+	if val == "" {
+		val = os.Getenv("DJANGO_API_URL")
+		if val != "" {
+			val = strings.TrimSuffix(val, "/api/products")
+		}
 	}
-	if val := os.Getenv("DJANGO_API_URL"); val != "" {
-		return strings.TrimSuffix(val, "/api/products")
+	if val == "" {
+		return "http://localhost:8000"
 	}
-	return "http://localhost:8000"
+	val = strings.TrimSpace(val)
+	if !strings.HasPrefix(val, "http://") && !strings.HasPrefix(val, "https://") {
+		val = "https://" + val
+	}
+	return strings.TrimSuffix(val, "/")
 }
+
 
 func main() {
 	router := SetupRouter()

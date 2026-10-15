@@ -1,0 +1,56 @@
+databases:
+  - name: jirmass-db
+    databaseName: jirmass
+    user: jirmass
+    plan: free
+    region: oregon
+
+services:
+  # 1. Django REST Backend API
+  - type: web
+    name: jirmass-backend
+    runtime: docker
+    rootDir: jirmass
+    dockerfilePath: Dockerfile.django
+    plan: free
+    region: oregon
+    healthCheckPath: /healthz
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: jirmass-db
+          property: connectionString
+      - key: DJANGO_ALLOWED_HOSTS
+        value: "localhost,127.0.0.1,jirmass-backend,*.onrender.com"
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS
+        value: "https://*.onrender.com"
+      - key: DJANGO_DEFAULT_FROM_EMAIL
+        value: "sales@jirmassplastics.com"
+      - key: DJANGO_EMAIL_BACKEND
+        value: "django.core.mail.backends.console.EmailBackend"
+
+  # 2. Go Frontend & Gateway Service
+  - type: web
+    name: jirmass-frontend
+    runtime: docker
+    rootDir: jirmass
+    dockerfilePath: Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /healthz
+    envVars:
+      - key: BACKEND_URL
+        fromService:
+          type: web
+          name: jirmass-backend
+          property: host
+      - key: LLM_MODEL
+        value: "gemini-1.5-flash"
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ADMIN_WEBHOOK_URL
+        sync: false
