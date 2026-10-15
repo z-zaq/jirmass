@@ -11,7 +11,8 @@ services:
     name: jirmass-backend
     runtime: docker
     rootDir: jirmass
-    dockerfilePath: Dockerfile.django
+    dockerfilePath: ./jirmass/Dockerfile.django
+    dockerContext: ./jirmass
     plan: free
     region: oregon
     healthCheckPath: /healthz
@@ -25,7 +26,7 @@ services:
           name: jirmass-db
           property: connectionString
       - key: DJANGO_ALLOWED_HOSTS
-        value: "localhost,127.0.0.1,jirmass-backend,*.onrender.com"
+        value: "localhost,127.0.0.1,jirmass-backend,.onrender.com"
       - key: DJANGO_CSRF_TRUSTED_ORIGINS
         value: "https://*.onrender.com"
       - key: DJANGO_DEFAULT_FROM_EMAIL
@@ -38,7 +39,8 @@ services:
     name: jirmass-frontend
     runtime: docker
     rootDir: jirmass
-    dockerfilePath: Dockerfile
+    dockerfilePath: ./jirmass/Dockerfile
+    dockerContext: ./jirmass
     plan: free
     region: oregon
     healthCheckPath: /healthz
@@ -47,7 +49,7 @@ services:
         fromService:
           type: web
           name: jirmass-backend
-          property: host
+          envVarKey: RENDER_EXTERNAL_URL
       - key: LLM_MODEL
         value: "gemini-1.5-flash"
       - key: GEMINI_API_KEY
