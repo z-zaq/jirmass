@@ -33,6 +33,10 @@ services:
         value: "sales@jirmassplastics.com"
       - key: DJANGO_EMAIL_BACKEND
         value: "django.core.mail.backends.console.EmailBackend"
+      - key: HOME
+        value: "/app"
+      - key: XDG_RUNTIME_DIR
+        value: "/tmp"
 
   # 2. Go Frontend & Gateway Service
   - type: web

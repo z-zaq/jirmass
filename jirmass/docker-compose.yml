@@ -13,6 +13,8 @@ services:
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-django-insecure-prod-key-please-set-in-env}
       - DJANGO_DEFAULT_FROM_EMAIL=${DJANGO_DEFAULT_FROM_EMAIL:-sales@jirmassplastics.com}
       - DJANGO_EMAIL_BACKEND=${DJANGO_EMAIL_BACKEND:-django.core.mail.backends.console.EmailBackend}
+      - HOME=/app
+      - XDG_RUNTIME_DIR=/tmp
     volumes:
       - backend-data:/app
     healthcheck:
