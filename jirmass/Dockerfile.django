@@ -26,9 +26,10 @@ RUN mkdir -p /app/staticfiles /app/media
 RUN cp /app/entrypoint.sh /usr/local/bin/entrypoint.sh && \
     chmod +x /usr/local/bin/entrypoint.sh /app/entrypoint.sh
 
-# Create non-root system user with an explicit valid home directory
+# Create non-root system user with explicit valid home directory and verify permissions
 RUN groupadd --system appgroup && \
-    useradd --system --gid appgroup -m --home-dir /home/appuser --shell /bin/bash appuser && \
+    useradd --system --gid appgroup --home-dir /app --no-create-home --shell /bin/bash appuser && \
+    mkdir -p /home/appuser /app/staticfiles /app/media && \
     chown -R appuser:appgroup /app /home/appuser && \
     chmod -R 755 /app /home/appuser
 
@@ -39,4 +40,6 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -f http://localhost:${PORT:-8000}/healthz || exit 1
 
-CMD ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["gunicorn"]
+

@@ -11,6 +11,11 @@ if [ "$1" = "gunicorn" ] || [ "$1" = "entrypoint.sh" ] || [ "$1" = "/usr/local/b
     shift
 fi
 
+# If the next argument is the WSGI target (e.g. config.wsgi:application), shift it to prevent duplication
+if [ "$1" = "config.wsgi:application" ] || [ "$1" = "config.wsgi" ]; then
+    shift
+fi
+
 echo "==> Running Django database migrations..."
 python manage.py migrate --noinput
 
@@ -20,10 +25,13 @@ python manage.py seed_water_products
 echo "==> Collecting static files..."
 python manage.py collectstatic --noinput
 
-# Determine if Gunicorn supports --no-control-socket (introduced in Gunicorn v25.1.0)
+# Determine if Gunicorn supports control socket flags (introduced in Gunicorn v25.1.0)
+# Disable unneeded control socket or reroute it to /tmp to prevent binding in HOME or /nonexistent
 EXTRA_ARGS=""
 if gunicorn --help 2>&1 | grep -q -- '--no-control-socket'; then
     EXTRA_ARGS="--no-control-socket"
+elif gunicorn --help 2>&1 | grep -q -- '--control-socket'; then
+    EXTRA_ARGS="--control-socket /tmp/gunicorn.ctl"
 fi
 
 echo "==> Starting Gunicorn on port ${PORT:-8000}..."
@@ -34,3 +42,4 @@ exec gunicorn config.wsgi:application \
     --worker-tmp-dir /dev/shm \
     $EXTRA_ARGS \
     "$@"
+

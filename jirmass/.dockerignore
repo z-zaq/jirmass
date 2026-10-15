@@ -1,0 +1,25 @@
+# Git & VCS
+.git/
+.gitignore
+
+# Python & Django caches
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+**/*.sqlite3
+**/*.db
+.venv/
+venv/
+env/
+ENV/
+
+# Go build artifacts
+/jirmass
+*.test
+*.out
+
+# Local logs & environment files
+*.log
+.env
+.env.*
+!.env.example
