@@ -289,6 +289,21 @@ class HealthCheckAPITest(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.get("status"), "ok")
+        head_response = self.client.head(url)
+        self.assertEqual(head_response.status_code, status.HTTP_200_OK)
+
+    def test_root_health_endpoints_get_and_head(self):
+        for path in ["/", "/health/", "/health"]:
+            # Test GET probe
+            get_resp = self.client.get(path)
+            self.assertEqual(get_resp.status_code, status.HTTP_200_OK)
+            self.assertEqual(get_resp.content, b"OK")
+
+            # Test HEAD probe (RFC 9110 compliance: status 200 without message body)
+            head_resp = self.client.head(path)
+            self.assertEqual(head_resp.status_code, status.HTTP_200_OK)
+            self.assertEqual(head_resp.content, b"")
+
 
 
 class StaffLoginAPITest(APITestCase):

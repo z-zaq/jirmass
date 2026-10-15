@@ -13,9 +13,11 @@ services:
     rootDir: jirmass
     dockerfilePath: Dockerfile.django
     dockerContext: .
+    dockerCommand: gunicorn --no-control-socket
     plan: free
     region: oregon
     healthCheckPath: /healthz
+
     envVars:
       - key: DJANGO_DEBUG
         value: "False"

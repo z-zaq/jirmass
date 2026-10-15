@@ -41,5 +41,6 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -f http://localhost:${PORT:-8000}/healthz || exit 1
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["gunicorn"]
+CMD ["gunicorn", "--no-control-socket"]
+
 

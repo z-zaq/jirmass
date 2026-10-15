@@ -197,6 +197,11 @@ class HealthCheckAPIView(APIView):
             status=status.HTTP_200_OK,
         )
 
+    def head(self, request, *args, **kwargs):
+        from django.http import HttpResponse
+        return HttpResponse(status=200, content_type="application/json")
+
+
 
 class TestAlertAPIView(APIView):
     """Triggers a test email & webhook notification for admin verification."""
