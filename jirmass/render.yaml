@@ -11,8 +11,8 @@ services:
     name: jirmass-backend
     runtime: docker
     rootDir: jirmass
-    dockerfilePath: ./jirmass/Dockerfile.django
-    dockerContext: ./jirmass
+    dockerfilePath: Dockerfile.django
+    dockerContext: .
     plan: free
     region: oregon
     healthCheckPath: /healthz
@@ -39,8 +39,8 @@ services:
     name: jirmass-frontend
     runtime: docker
     rootDir: jirmass
-    dockerfilePath: ./jirmass/Dockerfile
-    dockerContext: ./jirmass
+    dockerfilePath: Dockerfile
+    dockerContext: .
     plan: free
     region: oregon
     healthCheckPath: /healthz
